@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">To-Do List</string>
+    
+    <!-- Navigation -->
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_mine">Mine</string>
+    
+    <!-- Categories -->
+    <string name="category_all">All</string>
+    <string name="category_work">Work</string>
+    <string name="category_personal">Personal</string>
+    <string name="category_wishlist">Wishlist</string>
+    <string name="category_birthday">Birthday</string>
+    
+    <!-- Drawer -->
+    <string name="starred_tasks">Starred Tasks</string>
+    <string name="category">Category</string>
+    <string name="create_new">Create New</string>
+    
+    <!-- Task Dialog -->
+    <string name="new_task">New Task</string>
+    <string name="task_name">Task Name</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="mark_important">Mark as Important</string>
+    <string name="add_task">Add Task</string>
+    
+    <!-- Empty States -->
+    <string name="empty_tasks">Click here to create your first task.</string>
+    <string name="empty_calendar_title">Click \"+\" to create a new task.</string>
+    <string name="empty_calendar_subtitle">Plan your day on the calendar view clearly!</string>
+    
+    <!-- Mine Screen -->
+    <string name="tasks_overview">Tasks Overview</string>
+    <string name="completed_tasks">Completed Tasks</string>
+    <string name="pending_tasks">Pending Tasks</string>
+    <string name="completion_daily">Completion of Daily Tasks</string>
+    <string name="no_task_data">No task data</string>
+    <string name="tasks_next_7_days">Tasks in Next 7 Days</string>
+    <string name="pending_categories">Pending Tasks in Categories</string>
+    <string name="in_30_days">In 30 days</string>
+</resources>

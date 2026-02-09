@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/primary_blue"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_flag"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Mark Task"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="400dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Priority Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎯 Priority"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:id="@+id/priority_urgent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackground">
+                        <View
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/circle_marker_bg"
+                            android:backgroundTint="#F44336"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Urgent"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/priority_high"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackground">
+                        <View
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/circle_marker_bg"
+                            android:backgroundTint="#FF9800"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="High"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/priority_medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackground">
+                        <View
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/circle_marker_bg"
+                            android:backgroundTint="#2196F3"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Medium"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/priority_low"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackground">
+                        <View
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/circle_marker_bg"
+                            android:backgroundTint="#4CAF50"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Low"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chip_inactive_bg"
+                    android:layout_marginVertical="16dp"/>
+
+                <!-- Flag Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚩 Flag Color"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <ImageView android:id="@+id/flag_red" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#F06292"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <ImageView android:id="@+id/flag_yellow" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#FBC02D"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <ImageView android:id="@+id/flag_purple" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#AB47BC"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <ImageView android:id="@+id/flag_blue" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#42A5F5"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <ImageView android:id="@+id/flag_green" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#66BB6A"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <ImageView android:id="@+id/flag_orange" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:padding="10dp" 
+                        android:src="@drawable/ic_flag" 
+                        app:tint="#FF7043"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chip_inactive_bg"
+                    android:layout_marginVertical="16dp"/>
+
+                <!-- Number Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔢 Number Badge"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/num_1" 
+                        android:layout_width="40dp" 
+                        android:layout_height="40dp" 
+                        android:layout_margin="4dp"
+                        android:gravity="center" 
+                        android:text="1" 
+                        android:textStyle="bold" 
+                        android:textColor="#FFFFFF" 
+                        android:background="@drawable/circle_marker_bg" 
+                        android:backgroundTint="#F06292" />
+                    <TextView android:id="@+id/num_2" 
+                        android:layout_width="40dp" 
+                        android:layout_height="40dp" 
+                        android:layout_margin="4dp"
+                        android:gravity="center" 
+                        android:text="2" 
+                        android:textStyle="bold" 
+                        android:textColor="#FFFFFF" 
+                        android:background="@drawable/circle_marker_bg" 
+                        android:backgroundTint="#FBC02D" />
+                    <TextView android:id="@+id/num_3" 
+                        android:layout_width="40dp" 
+                        android:layout_height="40dp" 
+                        android:layout_margin="4dp"
+                        android:gravity="center" 
+                        android:text="3" 
+                        android:textStyle="bold" 
+                        android:textColor="#FFFFFF" 
+                        android:background="@drawable/circle_marker_bg" 
+                        android:backgroundTint="#AB47BC" />
+                    <TextView android:id="@+id/num_4" 
+                        android:layout_width="40dp" 
+                        android:layout_height="40dp" 
+                        android:layout_margin="4dp"
+                        android:gravity="center" 
+                        android:text="4" 
+                        android:textStyle="bold" 
+                        android:textColor="#FFFFFF" 
+                        android:background="@drawable/circle_marker_bg" 
+                        android:backgroundTint="#42A5F5" />
+                    <TextView android:id="@+id/num_5" 
+                        android:layout_width="40dp" 
+                        android:layout_height="40dp" 
+                        android:layout_margin="4dp"
+                        android:gravity="center" 
+                        android:text="5" 
+                        android:textStyle="bold" 
+                        android:textColor="#FFFFFF" 
+                        android:background="@drawable/circle_marker_bg" 
+                        android:backgroundTint="#66BB6A" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chip_inactive_bg"
+                    android:layout_marginVertical="16dp"/>
+
+                <!-- Progress Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Progress"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/prog_1" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="0%" 
+                        android:textSize="12sp" 
+                        android:textStyle="bold"
+                        android:textColor="#9E9E9E"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/prog_2" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="25%" 
+                        android:textSize="12sp" 
+                        android:textStyle="bold"
+                        android:textColor="#FF9800"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/prog_3" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="50%" 
+                        android:textSize="12sp" 
+                        android:textStyle="bold"
+                        android:textColor="#2196F3"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/prog_4" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="75%" 
+                        android:textSize="12sp" 
+                        android:textStyle="bold"
+                        android:textColor="#8BC34A"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/prog_5" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="100%" 
+                        android:textSize="12sp" 
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chip_inactive_bg"
+                    android:layout_marginVertical="16dp"/>
+
+                <!-- Mood Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="😊 Mood / Energy"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/mood_1" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="😀" 
+                        android:textSize="24sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/mood_2" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="🙂" 
+                        android:textSize="24sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/mood_3" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="😐" 
+                        android:textSize="24sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/mood_4" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="😔" 
+                        android:textSize="24sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                    <TextView android:id="@+id/mood_5" 
+                        android:layout_width="48dp" 
+                        android:layout_height="48dp" 
+                        android:gravity="center" 
+                        android:text="😤" 
+                        android:textSize="24sp"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chip_inactive_bg"
+                    android:layout_marginVertical="16dp"/>
+
+                <!-- Quick Status Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ Quick Status"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/status_blocked" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="🚫 Blocked" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+                    <TextView android:id="@+id/status_waiting" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="⏳ Waiting" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+                    <TextView android:id="@+id/status_review" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="👀 Review" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/status_inprogress" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="🔄 In Progress" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+                    <TextView android:id="@+id/status_done" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="✅ Done" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+                    <TextView android:id="@+id/status_idea" 
+                        android:layout_width="wrap_content" 
+                        android:layout_height="36dp" 
+                        android:gravity="center" 
+                        android:text="💡 Idea" 
+                        android:textSize="12sp"
+                        android:textColor="@color/text_primary"
+                        android:paddingHorizontal="12dp"
+                        android:background="@drawable/chip_unselected_bg"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Cancel Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="@color/background_light">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Cancel"
+                android:textColor="@color/text_secondary"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

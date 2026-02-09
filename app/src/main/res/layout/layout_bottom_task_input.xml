@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:elevation="8dp">
+
+    <!-- Main Task Input -->
+    <EditText
+        android:id="@+id/edt_task_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input new task here"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:background="@null"
+        android:padding="16dp"
+        android:inputType="text"
+        android:imeOptions="actionDone"/>
+
+    <!-- Sub-task Input (hidden by default) -->
+    <LinearLayout
+        android:id="@+id/subtask_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingHorizontal="16dp">
+
+        <!-- Subtask list will be added here dynamically -->
+        <LinearLayout
+            android:id="@+id/subtask_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <!-- Add subtask input -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_circle_outline"
+                android:tint="@color/text_hint"/>
+
+            <EditText
+                android:id="@+id/edt_subtask_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Input the sub-task"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:background="@null"
+                android:layout_marginStart="8dp"
+                android:inputType="text"/>
+
+            <ImageButton
+                android:id="@+id/btn_remove_subtask"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_close"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/text_hint"
+                android:contentDescription="Remove"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Bottom action bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="8dp">
+
+        <!-- Category chip -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Category"
+            android:textColor="@color/primary_blue"
+            android:textSize="12sp"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            app:chipCornerRadius="16dp"
+            app:chipMinHeight="32dp"
+            app:checkedIconVisible="false"
+            app:chipStrokeWidth="0dp"/>
+
+        <!-- Calendar/Date button -->
+        <ImageButton
+            android:id="@+id/btn_date"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_calendar_date"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/primary_blue"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Select date"/>
+
+        <!-- Subtask button -->
+        <ImageButton
+            android:id="@+id/btn_subtask"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_subtask"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/text_secondary"
+            android:contentDescription="Add subtask"/>
+
+        <!-- Template button -->
+        <ImageButton
+            android:id="@+id/btn_template"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_template"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/text_secondary"
+            android:contentDescription="Templates"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <!-- Submit button -->
+        <ImageButton
+            android:id="@+id/btn_submit"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_arrow_up"
+            android:background="@drawable/circle_gray_bg"
+            android:tint="@color/white"
+            android:contentDescription="Add task"/>
+
+    </LinearLayout>
+
+</LinearLayout>

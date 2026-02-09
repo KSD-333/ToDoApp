@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!-- Calendar Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@color/white">
+
+        <ImageButton
+            android:id="@+id/btn_prev_month"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous month"/>
+
+        <TextView
+            android:id="@+id/tv_month_year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="JANUARY 2026"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="start"/>
+
+        <ImageButton
+            android:id="@+id/btn_next_month"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_right"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next month"/>
+
+        <!-- Month/Year Dropdown Selector -->
+        <LinearLayout
+            android:id="@+id/month_year_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:id="@+id/tv_dropdown_month_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jan 2026"
+                android:textColor="@color/primary_blue"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/iv_dropdown_arrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_arrow_down"
+                app:tint="@color/primary_blue"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Days of Week Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sun"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mon"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tue"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Wed"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Thu"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Fri"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sat"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <!-- Calendar Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="16dp"/>
+
+    <!-- Tasks for Selected Day -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Selected Date Header -->
+        <TextView
+            android:id="@+id/tv_selected_date_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tasks for January 31, 2026"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"/>
+
+        <!-- Empty State for Calendar -->
+        <LinearLayout
+            android:id="@+id/calendar_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/primary_light_blue"
+                android:alpha="0.5"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click + to create a new task."
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plan your day on the calendar view clearly!"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_day_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

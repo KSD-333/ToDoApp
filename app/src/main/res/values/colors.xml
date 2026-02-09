@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="faintblue">#348FBF</color>
+    
+    <!-- Primary Colors -->
+    <color name="primary_blue">#4A8FBF</color>
+    <color name="primary_light_blue">#A8C8E8</color>
+    <color name="primary_dark_blue">#3A7FA5</color>
+    
+    <!-- Background Colors -->
+    <color name="background_white">#FFFFFF</color>
+    <color name="background_light">#F5F7FA</color>
+    <color name="background_light_gray">#F5F7FA</color>
+    <color name="card_background">#F0F4F8</color>
+    
+    <!-- Category Chip Colors -->
+    <color name="chip_all_bg">#4A8FBF</color>
+    <color name="chip_all_text">#FFFFFF</color>
+    <color name="chip_inactive_bg">#E8EEF4</color>
+    <color name="chip_inactive_text">#6B7A8A</color>
+    <color name="chip_outline_bg">#FFFFFF</color>
+    <color name="chip_outline_stroke">#D4DCE5</color>
+    
+    <!-- FAB Colors -->
+    <color name="fab_blue">#4A7FB5</color>
+    <color name="fab_icon">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1A2A3A</color>
+    <color name="text_secondary">#6B7A8A</color>
+    
+    <!-- Ripple Color -->
+    <color name="ripple_color">#304A8FBF</color>
+    <color name="text_hint">#9BA5B0</color>
+    
+    <!-- Bottom Navigation -->
+    <color name="nav_selected">#4A8FBF</color>
+    <color name="nav_unselected">#9BA5B0</color>
+    
+    <!-- Task Item Colors -->
+    <color name="task_card_bg">#FFFFFF</color>
+    <color name="task_time_text">#6B7A8A</color>
+    <color name="star_yellow">#FFD700</color>
+    <color name="star_gray">#D0D0D0</color>
+    
+    <!-- Calendar Colors -->
+    <color name="calendar_header_bg">#4A8FBF</color>
+    <color name="calendar_today">#4A8FBF</color>
+    <color name="calendar_today_faint">#334A8FBF</color>
+    <color name="calendar_selected">#4A8FBF</color>
+    
+    <!-- Drawer Header -->
+    <color name="drawer_header_bg">#4A8FBF</color>
+    
+    <!-- Speech Bubble -->
+    <color name="speech_bubble_bg">#F5D789</color>
+    <color name="speech_bubble_text">#5A4A2A</color>
+</resources>

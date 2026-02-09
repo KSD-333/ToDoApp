@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginHorizontal="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#EEF0F2"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:baselineAligned="false">
+
+        <!-- Left Column: Info & Action -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/tv_widget_title_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Standard"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"/>
+
+            <TextView
+                android:id="@+id/tv_widget_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Size: 4*4"
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="ADD"
+                android:textColor="#4A8FBF"
+                android:textSize="12sp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:backgroundTint="@android:color/transparent"
+                app:strokeColor="#4A8FBF"
+                app:strokeWidth="1dp"
+                app:cornerRadius="18dp"
+                app:elevation="0dp"
+                android:paddingHorizontal="24dp"/>
+
+        </LinearLayout>
+
+        <!-- Right Column: Previews -->
+        <LinearLayout
+            android:id="@+id/layout_previews"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical">
+
+            <!-- Preview items will be added dynamically here -->
+            
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

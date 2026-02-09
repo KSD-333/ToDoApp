@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header with gradient -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/gradient_blue_header"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_subtask"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="Add Sub-task"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Input field with modern design -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/edit_text_rounded_bg"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="4dp">
+
+                <EditText
+                    android:id="@+id/et_subtask_title"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="What needs to be done?"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_hint"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionDone"/>
+
+                <ImageView
+                    android:id="@+id/btn_add_subtask"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/primary_blue"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+
+            </LinearLayout>
+
+            <!-- Existing subtasks list in ScrollView -->
+            <ScrollView
+                android:id="@+id/subtasks_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:maxHeight="280dp"
+                android:fadeScrollbars="false"
+                android:scrollbarThumbVertical="@drawable/scrollbar_thumb">
+
+                <LinearLayout
+                    android:id="@+id/subtasks_list_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:divider="@drawable/list_divider"
+                    android:showDividers="middle"/>
+
+            </ScrollView>
+
+            <!-- Progress section -->
+            <LinearLayout
+                android:id="@+id/progress_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <!-- Circular progress -->
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp">
+
+                    <ProgressBar
+                        android:id="@+id/progress_circle"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/circular_progress_drawable"
+                        android:rotation="-90"/>
+
+                    <TextView
+                        android:id="@+id/tv_progress_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="0%"
+                        android:textColor="@color/primary_blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_progress_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 of 0 completed"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Keep going! 💪"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:paddingHorizontal="20dp"
+                android:gravity="center"
+                android:text="Cancel"
+                android:textColor="@color/text_secondary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackground"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/btn_add_new"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:paddingHorizontal="20dp"
+                android:gravity="center"
+                android:text="Add"
+                android:textColor="@color/primary_blue"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/btn_done"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:paddingHorizontal="24dp"
+                android:gravity="center"
+                android:text="Done"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/btn_primary_rounded"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

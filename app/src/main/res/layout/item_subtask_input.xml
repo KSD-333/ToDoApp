@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="6dp"
+    android:paddingStart="4dp"
+    android:descendantFocusability="afterDescendants">
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_circle_outline"
+        android:tint="@color/text_hint"
+        android:layout_marginEnd="12dp"/>
+
+    <EditText
+        android:id="@+id/et_subtask"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Add subtask"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:background="@null"
+        android:inputType="text"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:nextFocusDown="@+id/et_subtask"/>
+
+    <ImageButton
+        android:id="@+id/btn_remove_subtask"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_close"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="@color/text_hint"
+        android:contentDescription="Remove subtask"
+        android:padding="4dp"
+        android:focusable="false"/>
+
+</LinearLayout>

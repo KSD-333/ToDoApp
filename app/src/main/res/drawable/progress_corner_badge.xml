@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <!-- Triangle pointing to top-right corner (mirrored star badge) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M40,0 L0,0 L40,40 Z"/>
+</vector>

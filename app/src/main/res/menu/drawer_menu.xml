@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_starred">
+        <item
+            android:id="@+id/nav_starred"
+            android:icon="@drawable/ic_star"
+            android:title="Starred Tasks"
+            android:actionLayout="@layout/menu_item_count"/>
+    </group>
+    
+    <group android:id="@+id/group_categories">
+        <item
+            android:id="@+id/nav_category_header"
+            android:icon="@drawable/ic_category"
+            android:title="Category"
+            android:checkable="false"/>
+        <item
+            android:id="@+id/nav_all"
+            android:icon="@drawable/ic_folder"
+            android:title="All"
+            android:actionLayout="@layout/menu_item_count"/>
+        <item
+            android:id="@+id/nav_work"
+            android:icon="@drawable/ic_folder"
+            android:title="Work"
+            android:actionLayout="@layout/menu_item_count"/>
+        <item
+            android:id="@+id/nav_personal"
+            android:icon="@drawable/ic_folder"
+            android:title="Personal"
+            android:actionLayout="@layout/menu_item_count"/>
+        <item
+            android:id="@+id/nav_wishlist"
+            android:icon="@drawable/ic_folder"
+            android:title="Wishlist"
+            android:actionLayout="@layout/menu_item_count"/>
+        <item
+            android:id="@+id/nav_birthday"
+            android:icon="@drawable/ic_folder"
+            android:title="Birthday"
+            android:actionLayout="@layout/menu_item_count"/>
+        <item
+            android:id="@+id/nav_create_category"
+            android:icon="@drawable/ic_add_blue"
+            android:title="Create New"/>
+    </group>
+    
+    <group android:id="@+id/group_settings">
+        <item
+            android:id="@+id/nav_theme"
+            android:icon="@drawable/ic_theme"
+            android:title="Theme"/>
+        <item
+            android:id="@+id/nav_widget"
+            android:icon="@drawable/ic_widget"
+            android:title="Widget"/>
+    </group>
+</menu>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_bg"
+    android:paddingTop="12dp"
+    android:paddingBottom="8dp"
+    android:paddingHorizontal="12dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/handle_bar_bg"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Compact input like screenshot -->
+    <EditText
+        android:id="@+id/et_task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input new task here"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:background="@drawable/edit_text_bg"
+        android:padding="14dp"
+        android:inputType="text"
+        android:imeOptions="actionDone"/>
+
+    <!-- Optional expanded content (kept for future), hidden by default -->
+    <EditText
+        android:id="@+id/et_task_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add details"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:background="@null"
+        android:visibility="gone"
+        android:inputType="textMultiLine"
+        android:minLines="1"
+        android:maxLines="3"
+        android:paddingTop="10dp"
+        android:paddingBottom="6dp"/>
+
+    <!-- Scrollable subtasks container - height controlled programmatically -->
+    <ScrollView
+        android:id="@+id/subtasks_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:fillViewport="false">
+        
+        <LinearLayout
+            android:id="@+id/subtasks_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="4dp"/>
+            
+    </ScrollView>
+
+    <!-- Bottom action bar (category + date/time + template + submit) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp">
+        
+        <!-- Left side buttons in horizontal scroll -->
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:fillViewport="false">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Category Chip -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Category"
+                    android:textColor="@color/primary_blue"
+                    android:textSize="12sp"
+                    app:chipBackgroundColor="@color/chip_inactive_bg"
+                    app:chipCornerRadius="16dp"
+                    app:chipMinHeight="32dp"
+                    app:checkedIconVisible="false"
+                    app:chipStrokeWidth="0dp"
+                    app:chipIcon="@drawable/ic_category"
+                    app:chipIconTint="@color/primary_blue"
+                    app:chipIconSize="16dp"/>
+
+                <!-- Date/Time Display -->
+                <FrameLayout
+                    android:id="@+id/btn_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/icon_button_bg"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/ic_date"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_calendar_today"
+                            app:tint="@color/text_secondary"/>
+
+                        <TextView
+                            android:id="@+id/tv_date_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="11sp"
+                            android:textColor="@color/primary_blue"
+                            android:textStyle="bold"
+                            android:layout_marginStart="4dp"
+                            android:visibility="gone"/>
+
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- Subtask Button -->
+                <ImageButton
+                    android:id="@+id/btn_subtask"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_subtask"
+                    android:background="@drawable/icon_button_bg"
+                    app:tint="@color/text_secondary"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="Add subtask"
+                    android:scaleType="center"/>
+
+                <!-- Template Button -->
+                <ImageButton
+                    android:id="@+id/btn_template"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_template"
+                    android:background="@drawable/icon_button_bg"
+                    app:tint="@color/text_secondary"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="Templates"
+                    android:scaleType="center"/>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Submit Button - Always visible on right -->
+        <ImageButton
+            android:id="@+id/btn_submit"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_arrow_up"
+            android:background="@drawable/circle_blue_bg"
+            app:tint="@color/white"
+            android:contentDescription="Add task"
+            android:scaleType="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Main task checkbox -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M4,4h4v4H4V4z M6,6v0"/>
+    
+    <!-- Main task line -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M10,5h10v2H10V5z"/>
+    
+    <!-- Subtask 1 checkbox (indented) -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M8,10h3v3H8V10z"/>
+    
+    <!-- Subtask 1 line -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M13,11h7v1.5H13V11z"/>
+    
+    <!-- Subtask 2 checkbox (indented) -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M8,16h3v3H8V16z"/>
+    
+    <!-- Subtask 2 line -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M13,17h7v1.5H13V17z"/>
+    
+    <!-- Connecting bracket -->
+    <path
+        android:fillColor="#6B7A8A"
+        android:pathData="M5,8v11h1.5V9.5H8V8H5z"/>
+</vector>
+

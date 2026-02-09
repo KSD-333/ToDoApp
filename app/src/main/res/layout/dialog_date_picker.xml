@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg"
+    android:padding="16dp">
+
+    <!-- Calendar Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp">
+
+        <ImageButton
+            android:id="@+id/btn_prev_month"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous"/>
+
+        <TextView
+            android:id="@+id/tv_month_year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="JANUARY 2026"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <ImageButton
+            android:id="@+id/btn_next_month"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_right"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next"/>
+
+    </LinearLayout>
+
+    <!-- Day Headers -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Sun" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Mon" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Tue" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Wed" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Thu" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Fri" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:text="Sat" android:textColor="@color/text_secondary" android:textSize="12sp" android:gravity="center"/>
+
+    </LinearLayout>
+
+    <!-- Calendar Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Quick Date Chips -->
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:singleSelection="false"
+        app:selectionRequired="false">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_no_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Date"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            android:textColor="@color/text_secondary"
+            app:chipCornerRadius="16dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            android:textColor="@color/text_secondary"
+            app:chipCornerRadius="16dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_tomorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tomorrow"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            android:textColor="@color/text_secondary"
+            app:chipCornerRadius="16dp"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:singleSelection="false"
+        app:selectionRequired="false">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_3_days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 Days Later"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            android:textColor="@color/text_secondary"
+            app:chipCornerRadius="16dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_this_sunday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This Sunday"
+            app:chipBackgroundColor="@color/chip_inactive_bg"
+            android:textColor="@color/text_secondary"
+            app:chipCornerRadius="16dp"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Time Option -->
+    <LinearLayout
+        android:id="@+id/time_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/baseline_timer_24"
+            android:tint="@color/primary_blue"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Time"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_time_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:textColor="@color/text_hint"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_inactive_bg"/>
+
+    <!-- Reminder Option -->
+    <LinearLayout
+        android:id="@+id/reminder_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?attr/selectableItemBackground"
+        android:alpha="0.4"
+        android:clickable="false">
+
+        <ImageView
+            android:id="@+id/ic_reminder"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_notification"
+            app:tint="@color/text_hint"/>
+
+        <TextView
+            android:id="@+id/tv_reminder_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reminder"
+            android:textColor="@color/text_hint"
+            android:textSize="16sp"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_reminder_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set time first"
+            android:textColor="@color/text_hint"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_inactive_bg"/>
+
+    <!-- Repeat Option -->
+    <LinearLayout
+        android:id="@+id/repeat_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="12dp"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/ic_repeat"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_sync"
+            app:tint="@color/text_primary"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Repeat"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_repeat_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No"
+            android:textColor="@color/text_hint"/>
+
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:textColor="@color/text_secondary"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            android:textColor="@color/primary_blue"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+    </LinearLayout>
+
+</LinearLayout>

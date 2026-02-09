@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Reminder"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remind me before:"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="12dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_5min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5 minutes"
+        android:textSize="14sp"/>
+
+    <CheckBox
+        android:id="@+id/cb_10min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10 minutes"
+        android:textSize="14sp"/>
+
+    <CheckBox
+        android:id="@+id/cb_15min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="15 minutes"
+        android:textSize="14sp"/>
+
+    <CheckBox
+        android:id="@+id/cb_30min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30 minutes"
+        android:textSize="14sp"/>
+
+    <CheckBox
+        android:id="@+id/cb_1hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 hour"
+        android:textSize="14sp"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Custom:"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/et_custom_minutes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter minutes"
+            android:inputType="number"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="minutes before"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_use_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use alarm sound"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:textColor="#4A8FBF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"/>
+
+        <TextView
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            android:textColor="#4A8FBF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="4dp"
+    android:background="?attr/selectableItemBackground">
+    
+    <!-- Checkbox circle -->
+    <FrameLayout
+        android:layout_width="18dp"
+        android:layout_height="18dp">
+        
+        <View
+            android:id="@+id/subtask_circle"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/subtask_circle_small_unchecked"/>
+            
+        <ImageView
+            android:id="@+id/subtask_check_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check"
+            android:visibility="gone"/>
+            
+    </FrameLayout>
+    
+    <!-- Subtask title -->
+    <TextView
+        android:id="@+id/tv_subtask_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:text="Subtask name"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+    
+    <!-- Individual progress indicator on right -->
+    <FrameLayout
+        android:id="@+id/subtask_progress_indicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp">
+        
+        <ProgressBar
+            android:id="@+id/subtask_mini_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/circular_progress_tiny"
+            android:rotation="-90"/>
+            
+    </FrameLayout>
+        
+</LinearLayout>

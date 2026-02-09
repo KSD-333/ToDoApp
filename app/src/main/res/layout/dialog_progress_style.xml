@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_blue_header"
+        android:padding="20dp"
+        android:orientation="vertical">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Progress Style"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+            
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Choose how subtask progress is displayed"
+            android:textColor="#B3FFFFFF"
+            android:textSize="13sp"/>
+            
+    </LinearLayout>
+    
+    <!-- Style options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        
+        <!-- Option 1: Fill Background -->
+        <LinearLayout
+            android:id="@+id/option_fill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="@drawable/option_selected_bg">
+            
+            <RadioButton
+                android:id="@+id/radio_fill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"/>
+            
+            <!-- Preview card -->
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/preview_card_bg">
+                
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/progress_fill_gradient"/>
+                    
+            </FrameLayout>
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fill Background"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Card fills with green as progress"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"/>
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <!-- Option 2: Bottom Bar -->
+        <LinearLayout
+            android:id="@+id/option_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/option_unselected_bg">
+            
+            <RadioButton
+                android:id="@+id/radio_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            
+            <!-- Preview card -->
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/preview_card_bg">
+                
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_gravity="bottom"
+                    android:background="#E0E0E0"/>
+                    
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="4dp"
+                    android:layout_gravity="bottom"
+                    android:background="#4CAF50"/>
+                    
+            </FrameLayout>
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bottom Bar"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Progress bar at bottom of card"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"/>
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <!-- Option 3: Badge Only -->
+        <LinearLayout
+            android:id="@+id/option_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/option_unselected_bg">
+            
+            <RadioButton
+                android:id="@+id/radio_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            
+            <!-- Preview card -->
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/preview_card_bg">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="6dp"
+                    android:text="2/3"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/subtask_badge_bg"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"/>
+                    
+            </FrameLayout>
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Badge Only"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Simple count badge"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"/>
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+        <!-- Show subtask names toggle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="@drawable/option_unselected_bg">
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Subtask Names"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Display subtask list under task"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"/>
+                    
+            </LinearLayout>
+            
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_show_names"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"/>
+                
+        </LinearLayout>
+        
+        <!-- Color Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Progress Color"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+            
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none">
+            
+            <LinearLayout
+                android:id="@+id/color_options_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                
+                <!-- Green -->
+                <FrameLayout
+                    android:id="@+id/color_green"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_green"/>
+                    <ImageView
+                        android:id="@+id/check_green"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="visible"/>
+                </FrameLayout>
+                
+                <!-- Blue -->
+                <FrameLayout
+                    android:id="@+id/color_blue"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_blue"/>
+                    <ImageView
+                        android:id="@+id/check_blue"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="gone"/>
+                </FrameLayout>
+                
+                <!-- Orange -->
+                <FrameLayout
+                    android:id="@+id/color_orange"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_orange"/>
+                    <ImageView
+                        android:id="@+id/check_orange"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="gone"/>
+                </FrameLayout>
+                
+                <!-- Purple -->
+                <FrameLayout
+                    android:id="@+id/color_purple"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_purple"/>
+                    <ImageView
+                        android:id="@+id/check_purple"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="gone"/>
+                </FrameLayout>
+                
+                <!-- Red -->
+                <FrameLayout
+                    android:id="@+id/color_red"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_red"/>
+                    <ImageView
+                        android:id="@+id/check_red"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="gone"/>
+                </FrameLayout>
+                
+                <!-- Teal -->
+                <FrameLayout
+                    android:id="@+id/color_teal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/color_option_bg"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <View
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/color_circle_teal"/>
+                    <ImageView
+                        android:id="@+id/check_teal"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        android:visibility="gone"/>
+                </FrameLayout>
+                
+            </LinearLayout>
+            
+        </HorizontalScrollView>
+        
+    </LinearLayout>
+    
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="end">
+        
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:padding="12dp"/>
+            
+        <TextView
+            android:id="@+id/btn_apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Apply"
+            android:textColor="@color/primary_blue"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:padding="12dp"/>
+            
+    </LinearLayout>
+
+</LinearLayout>

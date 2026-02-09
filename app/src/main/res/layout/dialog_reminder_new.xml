@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg"
+    android:padding="24dp">
+
+    <!-- Header with Toggle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/tv_reminder_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reminder is on"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:trackTint="@color/primary_blue"/>
+
+    </LinearLayout>
+
+    <!-- Reminder At -->
+    <LinearLayout
+        android:id="@+id/reminder_at_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="14dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reminder at"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_reminder_at_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5 minutes before"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:layout_marginStart="4dp"
+            app:tint="@color/text_secondary"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_inactive_bg"/>
+
+    <!-- Reminder Type -->
+    <LinearLayout
+        android:id="@+id/reminder_type_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="14dp"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reminder Type"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_reminder_type_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notification"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_right"
+            android:layout_marginStart="4dp"
+            app:tint="@color/text_secondary"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_inactive_bg"/>
+
+    <!-- ScreenLock Reminder -->
+    <LinearLayout
+        android:id="@+id/screenlock_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="14dp"
+        android:background="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ScreenLock Reminder"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_screenlock_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Off"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"
+                android:layout_marginStart="4dp"
+                app:tint="@color/text_secondary"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show task reminder on phone unlock screen"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:textColor="@color/text_secondary"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            android:textColor="@color/primary_blue"
+            style="@style/Widget.Material3.Button.TextButton"/>
+
+    </LinearLayout>
+
+</LinearLayout>

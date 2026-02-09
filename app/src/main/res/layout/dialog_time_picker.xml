@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_rounded_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Time"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp"/>
+
+        <!-- Time Display -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp">
+
+            <TextView
+                android:id="@+id/tv_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7"
+                android:textColor="@color/text_primary"
+                android:textSize="48sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/text_secondary"
+                android:textSize="48sp"/>
+
+            <TextView
+                android:id="@+id/tv_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:textColor="@color/text_secondary"
+                android:textSize="48sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:id="@+id/tv_am"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AM"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:padding="4dp"
+                    android:background="?attr/selectableItemBackground"/>
+
+                <TextView
+                    android:id="@+id/tv_pm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PM"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:padding="4dp"
+                    android:background="?attr/selectableItemBackground"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Clock Dial - Header is managed by our custom display above -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TimePicker
+                android:id="@+id/time_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:timePickerMode="clock"
+                android:descendantFocusability="blocksDescendants"/>
+
+        </FrameLayout>
+
+        <!-- Quick Time Chips Row 1 -->
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:singleSelection="true"
+            app:selectionRequired="false"
+            app:chipSpacingHorizontal="8dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_no_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Time"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_7am"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="07:00 AM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_9am"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="09:00 AM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Quick Time Chips Row 2 -->
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:singleSelection="true"
+            app:selectionRequired="false"
+            app:chipSpacingHorizontal="8dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_10am"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00 AM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_12pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:00 PM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_2pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="02:00 PM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Quick Time Chips Row 3 -->
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:singleSelection="true"
+            app:selectionRequired="false"
+            app:chipSpacingHorizontal="8dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_4pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="04:00 PM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_6pm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="06:00 PM"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                app:chipMinHeight="32dp"
+                android:textSize="12sp"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CANCEL"
+                android:textColor="@color/text_secondary"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DONE"
+                android:textColor="@color/primary_blue"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F0F0F0"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#E0E0E0"/>
+        </shape>
+    </item>
+    <!-- Fallback to just a nice grey if image missing -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F8F8F8"/>
+        </shape>
+    </item>
+</layer-list>

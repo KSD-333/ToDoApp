@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            app:tint="@color/text_primary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btn_more"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_more"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="More"
+            app:tint="@color/text_hint" />
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
+
+            <!-- Category pill -->
+            <TextView
+                android:id="@+id/tv_category_pill"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:paddingHorizontal="14dp"
+                android:gravity="center_vertical"
+                android:text="Category"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:background="@drawable/bg_pill_light"
+                android:drawableEnd="@drawable/ic_arrow_down"
+                android:drawablePadding="8dp" />
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:hint="Task"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint" />
+
+            <!-- Subtasks Section -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/subtasks_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F8F9FA"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Header with progress -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Sub-tasks"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <!-- Circular progress indicator -->
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp">
+
+                            <ProgressBar
+                                android:id="@+id/subtask_progress_circle"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:indeterminate="false"
+                                android:max="100"
+                                android:progress="0"
+                                android:progressDrawable="@drawable/circular_progress_small"
+                                android:rotation="-90"/>
+
+                            <TextView
+                                android:id="@+id/tv_subtask_progress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="0/0"
+                                android:textColor="@color/primary_blue"
+                                android:textSize="9sp"
+                                android:textStyle="bold"/>
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                    <!-- Subtasks list -->
+                    <LinearLayout
+                        android:id="@+id/subtasks_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Add subtask row -->
+            <LinearLayout
+                android:id="@+id/row_add_subtask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:background="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/primary_blue" />
+
+                <TextView
+                    android:id="@+id/tv_add_subtask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Add Sub-task"
+                    android:textColor="@color/primary_blue"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF0F3" />
+
+            <!-- Schedule row (combined Date, Time, Repeat) -->
+            <LinearLayout
+                android:id="@+id/row_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/primary_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Schedule"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/text_hint" />
+                </LinearLayout>
+
+                <!-- Schedule details display -->
+                <LinearLayout
+                    android:id="@+id/schedule_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_schedule_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:paddingHorizontal="12dp"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/chip_selected_bg"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/tv_schedule_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:paddingHorizontal="12dp"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="@color/primary_blue"
+                        android:background="@drawable/chip_unselected_bg"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/tv_schedule_repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:paddingHorizontal="12dp"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="@drawable/chip_unselected_bg"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF0F3" />
+
+            <!-- Notes row (improved UI) -->
+            <LinearLayout
+                android:id="@+id/row_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_notes"
+                        app:tint="@color/primary_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Notes"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_notes_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ADD"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary_blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Notes preview -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/notes_preview_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#F5F7FA">
+
+                    <TextView
+                        android:id="@+id/tv_notes_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:maxLines="3"
+                        android:ellipsize="end"/>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF0F3" />
+
+            <!-- Attachment row (improved UI) -->
+            <LinearLayout
+                android:id="@+id/row_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_attachment"
+                        app:tint="@color/primary_blue" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Attachments"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_attachment_action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ADD"
+                        android:textAllCaps="true"
+                        android:textColor="@color/primary_blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Attachments list -->
+                <LinearLayout
+                    android:id="@+id/attachments_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEF0F3" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

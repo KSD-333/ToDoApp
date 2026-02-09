@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#E6FFFFFF"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <!-- Progress fill background (fills from left as subtasks complete) -->
+        <View
+            android:id="@+id/progress_fill_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/progress_fill_gradient"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Main task row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <CheckBox
+                    android:id="@+id/taskcheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/circle_checkbox"
+                    android:buttonTint="@null"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:id="@+id/taskname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Task Name"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:id="@+id/tasktime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textColor="@color/task_time_text"
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/taskcategory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Work"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="12sp"
+                            android:background="@drawable/chip_unselected_bg"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"
+                            android:visibility="gone"/>
+
+                    </LinearLayout>
+                    
+                    <!-- Task details row: date, time, repeat -->
+                    <LinearLayout
+                        android:id="@+id/task_details_row"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp"
+                        android:visibility="gone">
+                        
+                        <!-- Star icon -->
+                        <ImageView
+                            android:id="@+id/iv_star"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_star"
+                            app:tint="#FFD700"
+                            android:layout_marginEnd="8dp"
+                            android:visibility="gone"/>
+                        
+                        <!-- Due date -->
+                        <LinearLayout
+                            android:id="@+id/due_date_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+                            
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:src="@drawable/ic_calendar"
+                                app:tint="@color/task_time_text"/>
+                            
+                            <TextView
+                                android:id="@+id/tv_due_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:textSize="11sp"
+                                android:textColor="@color/task_time_text"/>
+                        </LinearLayout>
+                        
+                        <!-- Task time -->
+                        <LinearLayout
+                            android:id="@+id/task_time_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginStart="12dp"
+                            android:visibility="gone">
+                            
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:src="@drawable/ic_time"
+                                app:tint="@color/task_time_text"/>
+                            
+                            <TextView
+                                android:id="@+id/tv_task_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:textSize="11sp"
+                                android:textColor="@color/task_time_text"/>
+                        </LinearLayout>
+                        
+                        <!-- Repeat -->
+                        <LinearLayout
+                            android:id="@+id/repeat_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginStart="12dp"
+                            android:visibility="gone">
+                            
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:src="@drawable/ic_repeat"
+                                app:tint="@color/task_time_text"/>
+                            
+                            <TextView
+                                android:id="@+id/tv_repeat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:textSize="11sp"
+                                android:textColor="@color/task_time_text"/>
+                        </LinearLayout>
+                        
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Right side: Marker only -->
+                <FrameLayout
+                    android:id="@+id/marker_container"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/iv_marker_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_flag_outline" />
+
+                    <TextView
+                        android:id="@+id/tv_marker_text"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:background="@drawable/circle_marker_bg"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+            
+            <!-- Subtasks Section -->
+            <LinearLayout
+                android:id="@+id/subtask_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="12dp"
+                android:visibility="gone">
+                
+                <!-- Divider line -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8E8E8"
+                    android:layout_marginBottom="8dp"/>
+                
+                <!-- Subtasks list with progress -->
+                <LinearLayout
+                    android:id="@+id/subtasks_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+                    
+            </LinearLayout>
+            
+            <!-- Bottom progress bar (thin line at bottom of card) -->
+            <FrameLayout
+                android:id="@+id/bottom_progress_container"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:visibility="gone">
+                
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E0E0E0"/>
+                    
+                <View
+                    android:id="@+id/bottom_progress_fill"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/progress_bar_rounded_fill"/>
+                    
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <!-- Star Corner Badge (top-left) -->
+        <ImageView
+            android:id="@+id/iv_star_badge"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="start|top"
+            android:src="@drawable/star_corner_badge"
+            android:visibility="gone" />
+            
+        <!-- Small star icon on the badge -->
+        <ImageView
+            android:id="@+id/iv_star_icon_badge"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="start|top"
+            android:src="@drawable/ic_star"
+            app:tint="@color/white"
+            android:visibility="gone" />
+            
+        <!-- Subtask Progress Badge (top-right corner like star) -->
+        <ImageView
+            android:id="@+id/iv_progress_badge"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/progress_corner_badge"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+            
+        <!-- Progress percentage on the badge -->
+        <TextView
+            android:id="@+id/tv_progress_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="2dp"
+            android:layout_marginTop="3dp"
+            android:text="62%"
+            android:textSize="9sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+            
+        <!-- Count below percentage -->
+        <TextView
+            android:id="@+id/tv_subtask_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="6dp"
+            android:layout_marginTop="14dp"
+            android:text="5/8"
+            android:textSize="7sp"
+            android:textColor="#B3FFFFFF"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

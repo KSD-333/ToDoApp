@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="16dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Colored icon container -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/icon_container"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#E3F2FD">
+
+        <ImageView
+            android:id="@+id/iv_category_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_folder"
+            app:tint="#2196F3"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Category name -->
+    <TextView
+        android:id="@+id/tv_category_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="14dp"
+        android:text="Category"
+        android:textColor="#333333"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <!-- Task count badge -->
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:minWidth="24dp"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/count_badge_bg"
+        android:text="0"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

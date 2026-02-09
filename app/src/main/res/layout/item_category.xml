@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="16dp"
+    android:background="?attr/selectableItemBackground">
+
+    <View
+        android:id="@+id/category_color"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:background="@drawable/circle_gray_bg"/>
+
+    <TextView
+        android:id="@+id/tv_category_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Work"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:layout_marginStart="12dp"/>
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/baseline_check_24"
+        android:tint="@color/primary_blue"
+        android:visibility="gone"/>
+
+</LinearLayout>

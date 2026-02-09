@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="4dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Circle checkbox for subtask completion -->
+    <FrameLayout
+        android:id="@+id/subtask_check_container"
+        android:layout_width="28dp"
+        android:layout_height="28dp">
+        
+        <View
+            android:id="@+id/subtask_circle"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:background="@drawable/subtask_circle_unchecked"/>
+            
+        <ImageView
+            android:id="@+id/subtask_check_icon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_check"
+            app:tint="@color/white"
+            android:visibility="gone"/>
+            
+    </FrameLayout>
+
+    <!-- Subtask title -->
+    <TextView
+        android:id="@+id/tv_subtask_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:text="Subtask title"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"/>
+
+    <!-- Delete button -->
+    <ImageView
+        android:id="@+id/btn_delete_subtask"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/text_hint"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="2dp"/>
+
+</LinearLayout>

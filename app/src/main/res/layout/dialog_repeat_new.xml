@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_rounded_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat Task"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="20dp"
+            android:drawableStart="@drawable/ic_repeat"
+            android:drawablePadding="8dp"
+            app:drawableTint="@color/text_primary"/>
+
+        <!-- Weekdays Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat on"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Weekday Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/chip_sun"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="S"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_mon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="M"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_tue"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="T"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_wed"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="W"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_thu"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="T"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_fri"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="F"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/chip_sat"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="S"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:background="@drawable/day_circle_bg"/>
+
+        </LinearLayout>
+
+        <!-- Quick Presets -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_work_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Work Week"
+                android:textSize="12sp"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_weekend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekend"
+                android:textSize="12sp"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"
+                android:layout_marginEnd="8dp"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_everyday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Everyday"
+                android:textSize="12sp"
+                app:chipBackgroundColor="@color/chip_inactive_bg"
+                android:textColor="@color/text_secondary"
+                app:chipCornerRadius="16dp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/chip_inactive_bg"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Pattern selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Or select pattern"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- No Repeat Option -->
+        <LinearLayout
+            android:id="@+id/option_no_repeat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp"
+            android:background="@drawable/repeat_option_bg"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_close"
+                app:tint="@color/text_secondary"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="No Repeat"
+                android:textSize="15sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginStart="12dp"/>
+
+            <ImageView
+                android:id="@+id/check_no_repeat"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/primary_blue"
+                android:visibility="visible"/>
+        </LinearLayout>
+
+        <!-- Weekly Option -->
+        <LinearLayout
+            android:id="@+id/option_weekly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp"
+            android:background="@drawable/repeat_option_bg"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_calendar_week"
+                app:tint="@color/text_secondary"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Weekly"
+                android:textSize="15sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginStart="12dp"/>
+
+            <ImageView
+                android:id="@+id/check_weekly"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/primary_blue"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Monthly Option -->
+        <LinearLayout
+            android:id="@+id/option_monthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp"
+            android:background="@drawable/repeat_option_bg"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_calendar_month"
+                app:tint="@color/text_secondary"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Monthly"
+                android:textSize="15sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginStart="12dp"/>
+
+            <ImageView
+                android:id="@+id/check_monthly"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/primary_blue"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Yearly Option -->
+        <LinearLayout
+            android:id="@+id/option_yearly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp"
+            android:background="@drawable/repeat_option_bg"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_calendar_year"
+                app:tint="@color/text_secondary"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Yearly"
+                android:textSize="15sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginStart="12dp"/>
+
+            <ImageView
+                android:id="@+id/check_yearly"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/primary_blue"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CANCEL"
+                android:textColor="@color/text_secondary"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DONE"
+                android:textColor="@color/primary_blue"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
