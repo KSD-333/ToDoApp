@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.app.NotificationManager;
 import android.util.Log;
+import java.util.List;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -12,8 +13,17 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Alarm received!");
         String action = intent.getAction();
+        Log.d(TAG, "onReceive action: " + action);
+
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+            Log.d(TAG, "Boot completed, rescheduling alarms...");
+            rescheduleAlarms(context);
+            return;
+        }
+
+        Log.d(TAG, "Alarm received!");
+
         if ("com.example.todolist.ACTION_STOP_ALARM".equals(action)) {
             int notificationId = intent.getIntExtra("notification_id", 0);
             NotificationManager notificationManager = (NotificationManager) context
@@ -36,5 +46,44 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         // Show the notification
         NotificationHelper.showNotification(context, notificationId, taskName, minutesBefore, useAlarm, useScreenLock);
+    }
+
+    private void rescheduleAlarms(Context context) {
+        try {
+            DataManager dm = DataManager.getInstance(context);
+            List<TaskList> tasks = dm.getAllTasks();
+            NotificationHelper helper = new NotificationHelper(context);
+
+            long now = System.currentTimeMillis();
+            int count = 0;
+
+            for (TaskList task : tasks) {
+                // Check if task is pending and due in the future (or today)
+                if (task.check == 0 && task.dueDate > (now - 86400000)) {
+                    boolean hasReminders = task.reminderMinutes != null && !task.reminderMinutes.isEmpty();
+                    boolean useAlarm = task.useAlarm == 1;
+
+                    if (hasReminders || useAlarm) {
+                        try {
+                            helper.scheduleReminders(
+                                    task.id,
+                                    task.task,
+                                    task.dueDate,
+                                    task.taskTime,
+                                    task.reminderMinutes,
+                                    useAlarm,
+                                    task.screenLock == 1);
+                            count++;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to schedule for task " + task.id + ": " + e.getMessage());
+                        }
+                    }
+                }
+            }
+            Log.d(TAG, "Rescheduled " + count + " alarms");
+        } catch (Exception e) {
+            Log.e(TAG, "Error rescheduling alarms: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

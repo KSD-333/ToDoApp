@@ -23,8 +23,10 @@ public class DataManager {
     private final AtomicInteger templateIdCounter = new AtomicInteger(1);
 
     private TaskStorageManager storageManager;
+    private Context context;
 
     private DataManager(Context context) {
+        this.context = context;
         storageManager = new TaskStorageManager(context);
         initializeData();
     }
@@ -212,6 +214,7 @@ public class DataManager {
         task.id = taskIdCounter.getAndIncrement();
         tasks.add(task);
         saveChanges();
+        sendWidgetUpdate();
         return task.id;
     }
 
@@ -224,6 +227,7 @@ public class DataManager {
             if (tasks.get(i).id == task.id) {
                 tasks.set(i, task);
                 saveChanges();
+                sendWidgetUpdate();
                 break;
             }
         }
@@ -232,11 +236,139 @@ public class DataManager {
     public synchronized void updateStatusAndCompletedAt(int id, int status, long completedAt) {
         for (TaskList t : tasks) {
             if (t.id == id) {
+                // Check if we are completing a recurring task
+                if (status == 1 && t.check == 0) {
+                    handleRecurrence(t);
+                }
+
                 t.check = status;
                 t.completedAt = completedAt;
                 saveChanges();
+
+                // Cancel reminders if completed
+                if (status == 1) {
+                    NotificationHelper helper = new NotificationHelper(context);
+                    helper.cancelReminders(t.id);
+                }
+
+                // Notify widgets of data change
+                sendWidgetUpdate();
                 break;
             }
+        }
+    }
+
+    private void handleRecurrence(TaskList task) {
+        if (task.repeatType == null || "none".equals(task.repeatType))
+            return;
+
+        long nextDueDate = calculateNextDueDate(task);
+        if (nextDueDate <= 0)
+            return;
+
+        TaskList newTask = new TaskList();
+        newTask.setTask(task.getTask());
+        newTask.setCategory(task.getCategory());
+        newTask.setTime(task.getTime());
+        newTask.setDueDate(nextDueDate);
+        newTask.setTaskTime(task.getTaskTime());
+        newTask.setRepeatType(task.getRepeatType());
+        newTask.setRepeatInterval(task.getRepeatInterval());
+        newTask.setRepeatDays(task.getRepeatDays());
+        newTask.setReminderMinutes(task.getReminderMinutes());
+        newTask.setUseAlarm(task.getUseAlarm());
+        newTask.setScreenLock(task.getScreenLock());
+        newTask.setStarred(task.getIsStarred());
+        newTask.markerType = task.markerType;
+        newTask.markerValue = task.markerValue;
+        newTask.markerColor = task.markerColor;
+        newTask.setAttachments(task.getAttachments());
+        newTask.setCreatedFrom(task.getCreatedFrom());
+
+        // Reset status
+        newTask.setStatus(0);
+        newTask.setCompletedAt(0);
+
+        // Insert first to get ID
+        long newId = insertTask(newTask);
+
+        // Schedule notification for the new task
+        if ((newTask.getUseAlarm() == 1
+                || (newTask.getReminderMinutes() != null && !newTask.getReminderMinutes().isEmpty()))
+                && newTask.getDueDate() > System.currentTimeMillis()) {
+            NotificationHelper helper = new NotificationHelper(context); // Application context
+            helper.scheduleReminders(
+                    (int) newId,
+                    newTask.getTask(),
+                    newTask.getDueDate(),
+                    newTask.getTaskTime(),
+                    newTask.getReminderMinutes(),
+                    newTask.getUseAlarm() == 1,
+                    newTask.getScreenLock() == 1);
+        }
+    }
+
+    private long calculateNextDueDate(TaskList task) {
+        if (task.dueDate == 0)
+            return 0;
+
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTimeInMillis(task.dueDate);
+
+        long now = System.currentTimeMillis();
+
+        // Loop until we find a date in the future (catch up)
+        // Limit ensuring we don't freeze in case of weird data
+        int safetyLimit = 1000;
+        int loops = 0;
+
+        do {
+            switch (task.repeatType) {
+                case "days":
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, task.repeatInterval);
+                    break;
+                case "weeks":
+                    cal.add(java.util.Calendar.WEEK_OF_YEAR, task.repeatInterval);
+                    break;
+                case "months":
+                    cal.add(java.util.Calendar.MONTH, task.repeatInterval);
+                    break;
+                case "years":
+                    cal.add(java.util.Calendar.YEAR, task.repeatInterval);
+                    break;
+                default:
+                    return 0;
+            }
+            loops++;
+        } while (cal.getTimeInMillis() < now && loops < safetyLimit);
+
+        return cal.getTimeInMillis();
+    }
+
+    private void sendWidgetUpdate() {
+        try {
+            android.appwidget.AppWidgetManager appWidgetManager = android.appwidget.AppWidgetManager
+                    .getInstance(context);
+
+            // List of all widget provider classes
+            Class<?>[] providers = {
+                    WidgetProviders.AllDark.class, WidgetProviders.AllLight.class, WidgetProviders.AllTrans.class,
+                    WidgetProviders.TodayDark.class, WidgetProviders.TodayLight.class, WidgetProviders.TodayTrans.class,
+                    WidgetProviders.StarredDark.class, WidgetProviders.StarredLight.class,
+                    WidgetProviders.StarredTrans.class,
+                    WidgetProviders.WorkDark.class, WidgetProviders.WorkLight.class, WidgetProviders.WorkTrans.class,
+                    WidgetProviders.PersonalDark.class, WidgetProviders.PersonalLight.class,
+                    WidgetProviders.PersonalTrans.class
+            };
+
+            for (Class<?> c : providers) {
+                int[] ids = appWidgetManager.getAppWidgetIds(new android.content.ComponentName(context, c));
+                if (ids != null && ids.length > 0) {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.lv_widget_tasks);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -254,6 +386,7 @@ public class DataManager {
         tasks.removeIf(t -> t.id == task.id);
         subTasks.removeIf(st -> st.parentTaskId == task.id);
         saveChanges();
+        sendWidgetUpdate();
     }
 
     public synchronized void deleteTaskById(int id) {
