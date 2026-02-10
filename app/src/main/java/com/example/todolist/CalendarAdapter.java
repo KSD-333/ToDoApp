@@ -23,6 +23,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     private final Set<Long> selectedDays = new HashSet<>(); // normalized start-of-day millis
     private final Set<Long> daysWithTasks = new HashSet<>(); // days that have tasks
     private final Set<Long> importantDays = new HashSet<>(); // days marked as important
+    private final Set<Long> missedDays = new HashSet<>(); // days that have missed/rejected tasks
     private Calendar today;
     private Calendar currentMonth;
     private OnDayClickListener listener;
@@ -99,6 +100,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
         notifyDataSetChanged();
     }
 
+    public void setMissedDays(Set<Long> days) {
+        missedDays.clear();
+        if (days != null)
+            missedDays.addAll(days);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public DayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -116,6 +124,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
         boolean isToday = isSameDay(day, today);
         boolean isSelected = selectedDays.contains(normalizeToStartOfDay(day.getTimeInMillis()));
 
+        boolean isMissed = missedDays.contains(normalizeToStartOfDay(day.getTimeInMillis()));
+
         // Style based on state
         if (isSelected) {
             holder.tvDay.setBackgroundResource(R.drawable.calendar_selected_bg);
@@ -123,6 +133,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
         } else if (isToday) {
             holder.tvDay.setBackgroundResource(R.drawable.calendar_today_faint_bg);
             holder.tvDay.setTextColor(ContextCompat.getColor(context, R.color.primary_blue));
+        } else if (isMissed) {
+            holder.tvDay.setBackgroundResource(R.drawable.calendar_missed_bg);
+            holder.tvDay.setTextColor(android.graphics.Color.parseColor("#C62828"));
         } else {
             holder.tvDay.setBackground(null);
             if (isCurrentMonth) {

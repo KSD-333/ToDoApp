@@ -413,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getWindow().getDecorView().post(() -> {
             if (filterType == 2) {
                 tasksFragment.showOverdueFromMine();
+            } else if (filterType == 3) {
+                tasksFragment.showRejectedFromMine();
             } else {
                 tasksFragment.showPendingFromMine();
             }

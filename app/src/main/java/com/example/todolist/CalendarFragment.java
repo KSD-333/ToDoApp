@@ -369,11 +369,17 @@ public class CalendarFragment extends Fragment {
         long endMillis = endCal.getTimeInMillis();
 
         // Get all calendar tasks in this range
+        // Get all calendar tasks in this range
         List<TaskList> tasks = dm.getTasksByDateRange(startMillis, endMillis + 86400000);
 
+        Set<Long> missedDays = new HashSet<>();
         for (TaskList task : tasks) {
             if (task.dueDate > 0) {
-                daysWithTasks.add(normalizeToStartOfDay(task.dueDate));
+                long dayStart = normalizeToStartOfDay(task.dueDate);
+                daysWithTasks.add(dayStart);
+                if (task.check == 2) {
+                    missedDays.add(dayStart);
+                }
             }
         }
 
@@ -381,6 +387,7 @@ public class CalendarFragment extends Fragment {
         daysWithTasks.addAll(getRecurringTaskDays(startMillis, endMillis));
 
         calendarAdapter.setDaysWithTasks(daysWithTasks);
+        calendarAdapter.setMissedDays(missedDays);
     }
 
     private List<Calendar> generateDaysForMonth() {

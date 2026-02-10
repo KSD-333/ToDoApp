@@ -27,7 +27,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 public class MineFragment extends Fragment {
 
-    private TextView tvCompletedCount, tvPendingCount, tvOverdueCount;
+    private TextView tvCompletedCount, tvPendingCount, tvOverdueCount, tvRejectedCount;
     private TextView tvCompletionRate, tvRateMessage, tvInsightTotal;
     private TextView tvBestDay, tvTopCategory; // New insights
     private TextView tvDateRange, tvNoData;
@@ -74,6 +74,7 @@ public class MineFragment extends Fragment {
             tvCompletedCount = view.findViewById(R.id.tv_completed_count);
             tvPendingCount = view.findViewById(R.id.tv_pending_count);
             tvOverdueCount = view.findViewById(R.id.tv_overdue_count);
+            tvRejectedCount = view.findViewById(R.id.tv_rejected_count);
             tvCompletionRate = view.findViewById(R.id.tv_completion_rate);
             tvRateMessage = view.findViewById(R.id.tv_rate_message);
 
@@ -147,6 +148,7 @@ public class MineFragment extends Fragment {
             View cardCompleted = view.findViewById(R.id.card_completed);
             View cardPending = view.findViewById(R.id.card_pending);
             View cardOverdue = view.findViewById(R.id.card_overdue);
+            View cardRejected = view.findViewById(R.id.card_rejected);
 
             if (cardCompleted != null) {
                 cardCompleted.setOnClickListener(v -> openTasksFiltered(1));
@@ -156,6 +158,9 @@ public class MineFragment extends Fragment {
             }
             if (cardOverdue != null) {
                 cardOverdue.setOnClickListener(v -> openTasksFiltered(2));
+            }
+            if (cardRejected != null) {
+                cardRejected.setOnClickListener(v -> openTasksFiltered(3));
             }
 
             if (btnPrevWeek != null) {
@@ -188,6 +193,7 @@ public class MineFragment extends Fragment {
                     int completed = 0;
                     int pending = 0;
                     int overdue = 0;
+                    int rejected = 0;
                     long now = System.currentTimeMillis();
                     long todayStart = getTodayStart();
 
@@ -218,6 +224,8 @@ public class MineFragment extends Fragment {
                             }
                             catCompletedCounts.put(cat, catCompletedCounts.getOrDefault(cat, 0) + 1);
 
+                        } else if (t.check == 2) {
+                            rejected++;
                         } else {
                             pending++;
                             if (t.dueDate > 0 && t.dueDate < todayStart) {
@@ -337,6 +345,7 @@ public class MineFragment extends Fragment {
                     final String finalBestDay = bestDayStr;
                     final String finalTopCat = topCatStr;
                     final int finalTotal = total;
+                    final int finalRejected = rejected;
 
                     activity.runOnUiThread(() -> {
                         if (!isAdded())
@@ -348,6 +357,8 @@ public class MineFragment extends Fragment {
                             tvPendingCount.setText(String.valueOf(finalPending));
                         if (tvOverdueCount != null)
                             tvOverdueCount.setText(String.valueOf(finalOverdue));
+                        if (tvRejectedCount != null)
+                            tvRejectedCount.setText(String.valueOf(finalRejected));
 
                         if (tvCompletionRate != null)
                             tvCompletionRate.setText(finalRate + "%");

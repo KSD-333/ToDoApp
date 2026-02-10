@@ -185,9 +185,19 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                 cal.set(java.util.Calendar.SECOND, 0);
                 cal.set(java.util.Calendar.MILLISECOND, 0);
                 long todayStart = cal.getTimeInMillis();
+                long now = System.currentTimeMillis();
 
-                if ((task.check == 0 && task.dueDate > 0 && task.dueDate < todayStart) || task.check == 2) {
-                    card.setCardBackgroundColor(Color.parseColor("#FFEBEE"));
+                boolean isOverdue = false;
+                if (task.check == 0 && task.dueDate > 0) {
+                    if (task.dueDate < todayStart) {
+                        isOverdue = true; // Past date
+                    } else if (task.dueDate < now && task.taskTime != null && !task.taskTime.isEmpty()) {
+                        isOverdue = true; // Today, time passed
+                    }
+                }
+
+                if (isOverdue || task.check == 2) {
+                    card.setCardBackgroundColor(Color.parseColor("#FFCDD2")); // Use consistent Light Red
                 } else {
                     card.setCardBackgroundColor(Color.parseColor("#E6FFFFFF"));
                 }
@@ -210,18 +220,34 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
 
         // Strike through if completed
         if (task.check == 1) {
-            holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.taskname.setTextColor(ContextCompat.getColor(context, R.color.text_hint));
+            holder.taskname
+                    .setPaintFlags(holder.taskname.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.taskname.setTextColor(Color.GRAY);
+            if (holder.tasktime != null)
+                holder.tasktime.setTextColor(Color.LTGRAY);
+            if (holder.tvRejectionReason != null)
+                holder.tvRejectionReason.setVisibility(View.GONE);
         } else if (task.check == 2) {
-            // Missed task
-            holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.taskname.setTextColor(Color.RED);
-            // Optional: Append (Missed) if not already clear from color
-            // holder.taskname.setText(task.task + " (Missed)");
-            // Better to rely on color or a badge, but let's stick to color for now.
+            holder.taskname
+                    .setPaintFlags(holder.taskname.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.taskname.setTextColor(Color.GRAY);
+            if (holder.tasktime != null)
+                holder.tasktime.setTextColor(Color.LTGRAY);
+            if (holder.tvRejectionReason != null) {
+                holder.tvRejectionReason.setVisibility(View.VISIBLE);
+                String reason = task.rejectionReason;
+                if (reason == null || reason.trim().isEmpty())
+                    reason = "No reason";
+                holder.tvRejectionReason.setText("Reason: " + reason);
+            }
         } else {
-            holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.taskname
+                    .setPaintFlags(holder.taskname.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
             holder.taskname.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
+            if (holder.tasktime != null)
+                holder.tasktime.setTextColor(ContextCompat.getColor(context, R.color.task_time_text));
+            if (holder.tvRejectionReason != null)
+                holder.tvRejectionReason.setVisibility(View.GONE);
         }
 
         // Show task details (date, time, repeat, star)
@@ -543,6 +569,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         ImageView ivProgressBadge;
         TextView tvProgressPercent;
         TextView tvSubtaskCount;
+        TextView tvRejectionReason;
         CheckBox taskcheck;
         FrameLayout markerContainer;
         ImageView ivMarkerIcon;
@@ -572,6 +599,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
 
             taskcheck = itemView.findViewById(R.id.taskcheck);
             taskname = itemView.findViewById(R.id.taskname);
+            tvRejectionReason = itemView.findViewById(R.id.tv_rejection_reason);
             tasktime = itemView.findViewById(R.id.tasktime);
             taskcategory = itemView.findViewById(R.id.taskcategory);
 

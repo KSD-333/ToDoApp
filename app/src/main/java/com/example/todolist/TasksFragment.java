@@ -232,6 +232,14 @@ public class TasksFragment extends Fragment {
             }
 
             @Override
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int position = viewHolder.getAdapterPosition();
+                if (position >= 0 && position < taskList.size() && taskList.get(position).isHeader)
+                    return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+
+            @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (position < 0 || position >= taskList.size()) {
@@ -644,6 +652,7 @@ public class TasksFragment extends Fragment {
                         if (reason.isEmpty()) {
                             reason = "No reason provided";
                         }
+                        task.setStatus(2); // Set status to Rejected
                         task.setRejectionReason(reason);
                         dm.updateTask(task);
                         loadTasks();
@@ -1118,6 +1127,8 @@ public class TasksFragment extends Fragment {
                 }
             } else if ("starred".equals(currentFilter)) {
                 tasks = dm.getStarredTasks();
+            } else if ("rejected".equals(currentFilter)) {
+                tasks = dm.getTasksByStatus(2);
             } else { // Default: Pending + Today's Completed
                 long todayStart = getTodayStartTimestamp();
                 long todayEnd = getTodayEndTimestamp();
@@ -1289,6 +1300,13 @@ public class TasksFragment extends Fragment {
     public void showOverdueFromMine() {
         currentCategory = "All";
         currentFilter = "previous";
+        updateCategoryChipsUI();
+        loadTasks();
+    }
+
+    public void showRejectedFromMine() {
+        currentCategory = "All";
+        currentFilter = "rejected";
         updateCategoryChipsUI();
         loadTasks();
     }
