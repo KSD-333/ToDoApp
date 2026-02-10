@@ -69,9 +69,17 @@
         <item name="cornerSizeTopRight">24dp</item>
     </style>
     
-    <!-- FAB Circle Shape -->
     <style name="ShapeAppearanceOverlay.Fab.Circle" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.ToDoList.Splash" parent="Theme.ToDoList">
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/background_white</item>
+        <item name="android:windowBackground">@color/background_white</item>
+        <item name="android:statusBarColor">@color/background_white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

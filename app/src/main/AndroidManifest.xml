@@ -38,10 +38,14 @@
         android:theme="@style/Theme.ToDoList">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" />
+            
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ToDoList.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
