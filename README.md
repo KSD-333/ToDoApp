@@ -12,7 +12,7 @@ A powerful, feature-rich, and **Open Source** To-Do List application for Android
 You can download the latest APK directly from our GitHub Releases page:
 
 <div align="center">
-  <a href="https://github.com/KSD-333/ToDoApp/releases">
+  <a href="https://github.com/KSD-333/ToDoApp/releases/download/v1.0.0/ToDoList.apk">
     <img src="https://img.shields.io/badge/Download-APK-success?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" height="50" />
   </a>
 </div>
