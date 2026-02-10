@@ -20,14 +20,29 @@
             android:textColor="@color/text_primary"
             android:textSize="16sp"/>
 
-        <!-- Task indicator dot -->
-        <View
-            android:id="@+id/task_indicator"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="2dp"
-            android:background="@drawable/task_indicator_dot"
-            android:visibility="gone"/>
+            android:gravity="center">
+            
+            <View
+                android:id="@+id/important_indicator"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:background="@drawable/task_indicator_dot"
+                android:backgroundTint="#F44336"
+                android:layout_marginEnd="2dp"
+                android:visibility="gone"/>
+
+            <View
+                android:id="@+id/task_indicator"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:background="@drawable/task_indicator_dot"
+                android:visibility="gone"/>
+        </LinearLayout>
 
     </LinearLayout>
 

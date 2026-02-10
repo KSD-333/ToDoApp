@@ -179,12 +179,14 @@ public class TaskDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (task != null) {
-            TaskList updated = dm.getTaskById(task.id);
-            if (updated != null) {
-                task = updated;
-                bindTaskToUi();
+        try {
+
+            if (dm != null) {
+                dm.checkAndHandleMissedRecurrences();
             }
+            bindTaskToUi(); // Refresh UI
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -363,13 +365,14 @@ public class TaskDetailActivity extends AppCompatActivity {
         final boolean[] tempWeekdays = new boolean[7]; // Sun, Mon, Tue, Wed, Thu, Fri, Sat
 
         // Restore previously selected weekdays
+        // repeatDays stores Calendar day-of-week constants: 1=Sunday..7=Saturday
         if (task.repeatDays != null && !task.repeatDays.isEmpty()) {
             String[] dayIndices = task.repeatDays.split(",");
             for (String idx : dayIndices) {
                 try {
-                    int dayIdx = Integer.parseInt(idx.trim());
-                    if (dayIdx >= 0 && dayIdx < 7) {
-                        tempWeekdays[dayIdx] = true;
+                    int dayNum = Integer.parseInt(idx.trim());
+                    if (dayNum >= 1 && dayNum <= 7) {
+                        tempWeekdays[dayNum - 1] = true; // Convert 1-based to 0-based index
                     }
                 } catch (NumberFormatException ignored) {
                 }
@@ -705,13 +708,14 @@ public class TaskDetailActivity extends AppCompatActivity {
             task.useAlarm = tempUseAlarm[0];
             task.screenLock = tempScreenLock[0] ? 1 : 0;
 
-            // Save selected weekdays
+            // Save selected weekdays as Calendar day-of-week constants
+            // (1=Sunday..7=Saturday)
             StringBuilder daysBuilder = new StringBuilder();
             for (int i = 0; i < 7; i++) {
                 if (tempWeekdays[i]) {
                     if (daysBuilder.length() > 0)
                         daysBuilder.append(",");
-                    daysBuilder.append(i);
+                    daysBuilder.append(i + 1); // Convert 0-based index to 1-based Calendar constant
                 }
             }
             task.repeatDays = daysBuilder.toString();

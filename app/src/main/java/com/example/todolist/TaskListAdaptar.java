@@ -52,6 +52,10 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
     public static final int COLOR_RED = 4;
     public static final int COLOR_TEAL = 5;
 
+    // View types
+    private static final int VIEW_TYPE_HEADER = 0;
+    private static final int VIEW_TYPE_TASK = 1;
+
     Context context;
     ArrayList<TaskList> tasklist;
     DataManager dm;
@@ -132,17 +136,36 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         this.openSwipeTranslationX = translationX;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        TaskList item = tasklist.get(position);
+        return item.isHeader ? VIEW_TYPE_HEADER : VIEW_TYPE_TASK;
+    }
+
     @NonNull
     @Override
     public TaskListAdaptar.viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_task_list, parent, false);
-        return new viewHolder(view);
+        if (viewType == VIEW_TYPE_HEADER) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_task_header, parent, false);
+            return new viewHolder(view, true);
+        } else {
+            View view = LayoutInflater.from(context).inflate(R.layout.activity_task_list, parent, false);
+            return new viewHolder(view, false);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskListAdaptar.viewHolder holder,
             @SuppressLint("RecyclerView") int position) {
         TaskList task = tasklist.get(position);
+
+        // If it's a header, just set the title and return
+        if (task.isHeader) {
+            if (holder.tvHeaderTitle != null) {
+                holder.tvHeaderTitle.setText(task.headerTitle);
+            }
+            return;
+        }
 
         // Keep swipe-open rows stable during recycling.
         try {
@@ -163,7 +186,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                 cal.set(java.util.Calendar.MILLISECOND, 0);
                 long todayStart = cal.getTimeInMillis();
 
-                if (task.check == 0 && task.dueDate > 0 && task.dueDate < todayStart) {
+                if ((task.check == 0 && task.dueDate > 0 && task.dueDate < todayStart) || task.check == 2) {
                     card.setCardBackgroundColor(Color.parseColor("#FFEBEE"));
                 } else {
                     card.setCardBackgroundColor(Color.parseColor("#E6FFFFFF"));
@@ -189,6 +212,13 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         if (task.check == 1) {
             holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.taskname.setTextColor(ContextCompat.getColor(context, R.color.text_hint));
+        } else if (task.check == 2) {
+            // Missed task
+            holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.taskname.setTextColor(Color.RED);
+            // Optional: Append (Missed) if not already clear from color
+            // holder.taskname.setText(task.task + " (Missed)");
+            // Better to rely on color or a badge, but let's stick to color for now.
         } else {
             holder.taskname.setPaintFlags(holder.taskname.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             holder.taskname.setTextColor(ContextCompat.getColor(context, R.color.text_primary));
@@ -497,6 +527,10 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
 
     public static class viewHolder extends RecyclerView.ViewHolder {
 
+        // Header view
+        TextView tvHeaderTitle;
+
+        // Task views
         TextView taskname, tasktime, taskcategory;
         TextView tvDueDate, tvTaskTime, tvRepeat;
         LinearLayout taskDetailsRow, dueDateContainer, taskTimeContainer, repeatContainer;
@@ -517,8 +551,24 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         ImageView ivStarIconBadge;
         TextView tvMarkerText;
 
+        // Constructor for header
+        public viewHolder(@NonNull View itemView, boolean isHeader) {
+            super(itemView);
+            if (isHeader) {
+                tvHeaderTitle = itemView.findViewById(R.id.tv_header_title);
+                return;
+            }
+            // Otherwise initialize task views (same as regular constructor)
+            initTaskViews(itemView);
+        }
+
+        // Constructor for task (backward compatibility)
         public viewHolder(@NonNull View itemView) {
             super(itemView);
+            initTaskViews(itemView);
+        }
+
+        private void initTaskViews(View itemView) {
 
             taskcheck = itemView.findViewById(R.id.taskcheck);
             taskname = itemView.findViewById(R.id.taskname);

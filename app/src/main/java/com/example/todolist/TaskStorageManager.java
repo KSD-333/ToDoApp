@@ -49,12 +49,47 @@ public class TaskStorageManager {
     /**
      * Creates the main app folder structure in external storage
      */
+    /**
+     * Creates the main app folder structure in external storage
+     */
     private File getAppDirectory() {
-        File baseExternal = context.getExternalFilesDir(null);
-        File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
-        File appDir = new File(baseDir, APP_FOLDER);
+        File appDir;
+        // Check if we have All Files Access on Android 11+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R
+                && Environment.isExternalStorageManager()) {
+            // Use root internal storage for maximum visibility as requested
+            appDir = new File(Environment.getExternalStorageDirectory(), APP_FOLDER);
+        } else {
+            // Try Documents folder for visibility on devices where we don't have full root
+            // access yet or user denied
+            appDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                    APP_FOLDER);
+        }
 
-        if (!appDir.exists()) {
+        try {
+            if (!appDir.exists()) {
+                if (!appDir.mkdirs()) {
+                    // Start: Fallback mechanism
+                    // If primary method fails, try standard Documents path
+                    File docsDir = new File(Environment.getExternalStorageDirectory(), "Documents");
+                    File altDir = new File(docsDir, APP_FOLDER);
+                    if (!altDir.exists() && !altDir.mkdirs()) {
+                        // If that fails too, use app-specific external storage (guaranteed to work but
+                        // less visible)
+                        File baseExternal = context.getExternalFilesDir(null);
+                        File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+                        appDir = new File(baseDir, APP_FOLDER);
+                        appDir.mkdirs();
+                    } else {
+                        appDir = altDir;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Fallback to safe app-specific storage on error
+            File baseExternal = context.getExternalFilesDir(null);
+            File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+            appDir = new File(baseDir, APP_FOLDER);
             appDir.mkdirs();
         }
 
@@ -256,7 +291,23 @@ public class TaskStorageManager {
     public java.util.ArrayList<TaskList> loadTasks() {
         java.util.ArrayList<TaskList> list = new java.util.ArrayList<>();
         try {
-            File file = new File(getAppDirectory(), "tasks.json");
+            File appDir = getAppDirectory();
+            File file = new File(appDir, "tasks.json");
+
+            // Check legacy location if not found in new location
+            if (!file.exists()) {
+                File baseExternal = context.getExternalFilesDir(null);
+                File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+                File legacyDir = new File(baseDir, APP_FOLDER);
+
+                if (!legacyDir.getAbsolutePath().equals(appDir.getAbsolutePath())) {
+                    File legacyFile = new File(legacyDir, "tasks.json");
+                    if (legacyFile.exists()) {
+                        file = legacyFile;
+                    }
+                }
+            }
+
             if (!file.exists())
                 return list;
 
@@ -279,9 +330,9 @@ public class TaskStorageManager {
                 t.setUseAlarm(obj.optInt("useAlarm"));
                 t.setScreenLock(obj.optInt("screenLock"));
                 t.setTaskTime(obj.optString("taskTime"));
-                t.setCompletedAt(obj.optLong("completedAt"));
+                t.setCompletedAt(obj.optLong("completedAt", 0));
                 t.setAttachments(obj.optString("attachments"));
-                t.setRepeatDays(obj.optString("repeatDays"));
+                t.setRepeatDays(obj.optString("repeatDays", ""));
                 t.setCreatedFrom(obj.optString("createdFrom", "tasks"));
                 list.add(t);
             }
@@ -294,7 +345,23 @@ public class TaskStorageManager {
     public java.util.ArrayList<Category> loadCategories() {
         java.util.ArrayList<Category> list = new java.util.ArrayList<>();
         try {
-            File file = new File(getAppDirectory(), "categories.json");
+            File appDir = getAppDirectory();
+            File file = new File(appDir, "categories.json");
+
+            // Check legacy location
+            if (!file.exists()) {
+                File baseExternal = context.getExternalFilesDir(null);
+                File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+                File legacyDir = new File(baseDir, APP_FOLDER);
+
+                if (!legacyDir.getAbsolutePath().equals(appDir.getAbsolutePath())) {
+                    File legacyFile = new File(legacyDir, "categories.json");
+                    if (legacyFile.exists()) {
+                        file = legacyFile;
+                    }
+                }
+            }
+
             if (!file.exists())
                 return list;
 
@@ -319,7 +386,23 @@ public class TaskStorageManager {
     public java.util.ArrayList<SubTask> loadSubTasks() {
         java.util.ArrayList<SubTask> list = new java.util.ArrayList<>();
         try {
-            File file = new File(getAppDirectory(), "subtasks.json");
+            File appDir = getAppDirectory();
+            File file = new File(appDir, "subtasks.json");
+
+            // Check legacy location
+            if (!file.exists()) {
+                File baseExternal = context.getExternalFilesDir(null);
+                File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+                File legacyDir = new File(baseDir, APP_FOLDER);
+
+                if (!legacyDir.getAbsolutePath().equals(appDir.getAbsolutePath())) {
+                    File legacyFile = new File(legacyDir, "subtasks.json");
+                    if (legacyFile.exists()) {
+                        file = legacyFile;
+                    }
+                }
+            }
+
             if (!file.exists())
                 return list;
 
@@ -417,6 +500,75 @@ public class TaskStorageManager {
      * Gets the app storage directory path for display
      */
     public String getStoragePath() {
-        return new File(Environment.getExternalStorageDirectory(), APP_FOLDER).getAbsolutePath();
+        return getAppDirectory().getAbsolutePath();
+    }
+
+    /**
+     * Checks if data exists in the old private storage and migrates it to the new
+     * public storage.
+     * Should be called asynchronously.
+     */
+    public void checkAndMigrateData() {
+        new Thread(() -> {
+            try {
+                File newDir = getAppDirectory();
+                File newTasksDir = new File(newDir, TASKS_FOLDER);
+
+                // Check if new directory already has data. If yes, don't migrate.
+                if (newTasksDir.exists() && newTasksDir.list() != null && newTasksDir.list().length > 0) {
+                    return;
+                }
+
+                // Old Directory Location (previous private implementation)
+                File baseExternal = context.getExternalFilesDir(null); // /Android/data/...
+                File baseDir = (baseExternal != null) ? baseExternal : context.getFilesDir();
+                File oldAppDir = new File(baseDir, APP_FOLDER);
+
+                // Avoid migrating if paths are identical
+                if (oldAppDir.getAbsolutePath().equals(newDir.getAbsolutePath())) {
+                    return;
+                }
+
+                if (oldAppDir.exists() && oldAppDir.list() != null && oldAppDir.list().length > 0) {
+                    // Copy recursively
+                    if (copyDirectory(oldAppDir, newDir)) {
+                        showToast("Data moved to Documents/ToDoList", Toast.LENGTH_LONG);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private boolean copyDirectory(File source, File destination) {
+        if (source.isDirectory()) {
+            if (!destination.exists() && !destination.mkdirs()) {
+                // If create fails, maybe it exists?
+                if (!destination.exists())
+                    return false;
+            }
+            String[] children = source.list();
+            if (children != null) {
+                for (String child : children) {
+                    if (!copyDirectory(new File(source, child), new File(destination, child))) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            try (java.io.InputStream in = new java.io.FileInputStream(source);
+                    java.io.OutputStream out = new java.io.FileOutputStream(destination)) {
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 }

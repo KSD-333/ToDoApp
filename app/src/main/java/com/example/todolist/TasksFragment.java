@@ -37,6 +37,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class TasksFragment extends Fragment {
 
@@ -433,8 +435,8 @@ public class TasksFragment extends Fragment {
                     int starIcon = isStarred ? R.drawable.ic_star : R.drawable.ic_star_outline;
                     drawSwipeIconAndText(c, starIcon, x0, top, seg, height, Color.parseColor("#FF9800"),
                             isStarred ? "Unstar" : "Star");
-                    drawSwipeIconAndText(c, R.drawable.ic_calendar_date, x1, top, seg, height,
-                            Color.parseColor("#2196F3"), "Date");
+                    drawSwipeIconAndText(c, R.drawable.ic_close, x1, top, seg, height,
+                            Color.parseColor("#607D8B"), "Reject");
                     drawSwipeIconAndText(c, R.drawable.ic_delete, x2, top, seg, height, Color.parseColor("#F44336"),
                             "Delete");
                 }
@@ -463,8 +465,8 @@ public class TasksFragment extends Fragment {
                 dm.updateStarred(task.id, newStarred);
                 adapter.notifyItemChanged(position);
                 break;
-            case 1: // Date - Open AddTaskBottomSheet for editing date/time/repeat
-                openTaskEditDialog(task);
+            case 1: // Reject - Show dialog for reason
+                showRejectDialog(task, position);
                 break;
             case 2: // Delete
                 new AlertDialog.Builder(requireContext())
@@ -614,6 +616,43 @@ public class TasksFragment extends Fragment {
                 loadTasks();
             });
             bottomSheet.show(getParentFragmentManager(), "EditTaskBottomSheet");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showRejectDialog(TaskList task, int position) {
+        try {
+            if (task == null || getActivity() == null)
+                return;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            View dialogView = LayoutInflater.from(requireContext()).inflate(android.R.layout.simple_list_item_1, null);
+
+            // Create a simple dialog with EditText
+            final android.widget.EditText input = new android.widget.EditText(requireContext());
+            input.setHint("Enter reason for rejection...");
+            input.setMinLines(2);
+            input.setMaxLines(4);
+            input.setPadding(50, 40, 50, 40);
+
+            builder.setTitle("Reject Task")
+                    .setMessage("Why are you rejecting \"" + task.task + "\"?")
+                    .setView(input)
+                    .setPositiveButton("Reject", (dialog, which) -> {
+                        String reason = input.getText().toString().trim();
+                        if (reason.isEmpty()) {
+                            reason = "No reason provided";
+                        }
+                        task.setRejectionReason(reason);
+                        dm.updateTask(task);
+                        loadTasks();
+                        android.widget.Toast.makeText(requireContext(),
+                                "Task rejected: " + reason,
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1079,17 +1118,60 @@ public class TasksFragment extends Fragment {
                 }
             } else if ("starred".equals(currentFilter)) {
                 tasks = dm.getStarredTasks();
-            } else { // Default: Pending (and optionally active/today/etc if other filters existed)
-                // For now, default is ALL Pending
+            } else { // Default: Pending + Today's Completed
+                long todayStart = getTodayStartTimestamp();
+                long todayEnd = getTodayEndTimestamp();
+
+                List<TaskList> pendingTasks;
+                List<TaskList> completedTasks;
+
                 if (currentCategory == null || currentCategory.equals("All")) {
-                    tasks = dm.getTasksByStatus(0);
+                    pendingTasks = dm.getTasksByStatus(0);
+                    completedTasks = dm.getTasksByStatus(1);
                 } else {
-                    tasks = dm.getTasksByStatusAndCategory(0, currentCategory);
+                    pendingTasks = dm.getTasksByStatusAndCategory(0, currentCategory);
+                    completedTasks = dm.getTasksByStatusAndCategory(1, currentCategory);
+                }
+
+                // 1. Add ALL Pending tasks (including future)
+                tasks.addAll(pendingTasks);
+
+                // 2. Add Completed tasks (Completed Today)
+                for (TaskList t : completedTasks) {
+                    if (t.completedAt >= todayStart && t.completedAt <= todayEnd) {
+                        tasks.add(t);
+                    }
                 }
             }
 
-            if (tasks != null) {
-                taskList.addAll(tasks);
+            if (tasks != null && !tasks.isEmpty()) {
+                // Sort tasks by due date (earliest first, null dates last)
+                java.util.Collections.sort(tasks, (t1, t2) -> {
+                    if (t1.dueDate == 0 && t2.dueDate == 0)
+                        return 0;
+                    if (t1.dueDate == 0)
+                        return 1; // null dates go to end
+                    if (t2.dueDate == 0)
+                        return -1;
+                    return Long.compare(t1.dueDate, t2.dueDate);
+                });
+
+                // Group tasks by date with headers
+                String lastDateHeader = "";
+                for (TaskList task : tasks) {
+                    String dateHeader = getDateHeader(task.dueDate);
+
+                    // Insert header if date changed
+                    if (!dateHeader.equals(lastDateHeader)) {
+                        TaskList header = new TaskList();
+                        header.isHeader = true;
+                        header.headerTitle = dateHeader;
+                        taskList.add(header);
+                        lastDateHeader = dateHeader;
+                    }
+
+                    taskList.add(task);
+                }
             }
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
@@ -1109,6 +1191,47 @@ public class TasksFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Returns a WhatsApp-style date header: "Today", "Yesterday", "Tomorrow", or
+     * formatted date
+     */
+    private String getDateHeader(long dueDate) {
+        if (dueDate == 0) {
+            return "No Due Date";
+        }
+
+        java.util.Calendar taskCal = java.util.Calendar.getInstance();
+        taskCal.setTimeInMillis(dueDate);
+        taskCal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        taskCal.set(java.util.Calendar.MINUTE, 0);
+        taskCal.set(java.util.Calendar.SECOND, 0);
+        taskCal.set(java.util.Calendar.MILLISECOND, 0);
+
+        java.util.Calendar todayCal = java.util.Calendar.getInstance();
+        todayCal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        todayCal.set(java.util.Calendar.MINUTE, 0);
+        todayCal.set(java.util.Calendar.SECOND, 0);
+        todayCal.set(java.util.Calendar.MILLISECOND, 0);
+
+        long daysDiff = (taskCal.getTimeInMillis() - todayCal.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+
+        if (daysDiff == 0) {
+            return "Today";
+        } else if (daysDiff == -1) {
+            return "Yesterday";
+        } else if (daysDiff == 1) {
+            return "Tomorrow";
+        } else if (daysDiff < -1 && daysDiff >= -7) {
+            // Within last week: show day name
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
+            return sdf.format(taskCal.getTime());
+        } else {
+            // Show formatted date
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+            return sdf.format(taskCal.getTime());
         }
     }
 

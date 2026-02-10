@@ -202,6 +202,13 @@ public class CalendarFragment extends Fragment {
                 tvMonthYear.setOnClickListener(v -> showMonthYearPicker());
             }
 
+            // Setup "Mark as Important" FAB
+            com.google.android.material.floatingactionbutton.FloatingActionButton fabMarkImportant = view
+                    .findViewById(R.id.fab_mark_important);
+            if (fabMarkImportant != null) {
+                fabMarkImportant.setOnClickListener(v -> toggleImportantDate());
+            }
+
             updateCalendar();
             loadTasksForSelectedDay();
         } catch (Exception e) {
@@ -246,6 +253,39 @@ public class CalendarFragment extends Fragment {
             loadTasksForSelectedDay();
         });
         sheet.show(getParentFragmentManager(), "AddTaskBottomSheet");
+    }
+
+    /**
+     * Toggle the selected date as "important" and save to SharedPreferences
+     */
+    private void toggleImportantDate() {
+        if (selectedDate == null || getContext() == null)
+            return;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateKey = dateFormat.format(selectedDate.getTime());
+
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences("important_dates",
+                android.content.Context.MODE_PRIVATE);
+        Set<String> importantDates = new HashSet<>(prefs.getStringSet("dates", new HashSet<>()));
+
+        boolean isNowImportant;
+        if (importantDates.contains(dateKey)) {
+            importantDates.remove(dateKey);
+            isNowImportant = false;
+            android.widget.Toast
+                    .makeText(getContext(), "Removed from important dates", android.widget.Toast.LENGTH_SHORT).show();
+        } else {
+            importantDates.add(dateKey);
+            isNowImportant = true;
+            android.widget.Toast.makeText(getContext(), "Marked as important date", android.widget.Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+        prefs.edit().putStringSet("dates", importantDates).apply();
+        // Optionally update calendar UI to show important dates visually
+        updateCalendar();
+        updateFabState();
     }
 
     private void animateMonthChange(int direction) {
@@ -303,6 +343,9 @@ public class CalendarFragment extends Fragment {
         calendarAdapter.updateDays(days);
         calendarAdapter.setSelectedDays(selectedDates);
 
+        // Update important days in adapter
+        calendarAdapter.setImportantDays(getImportantDays());
+
         // Load task indicators for the visible month
         loadTaskIndicators(days);
     }
@@ -333,6 +376,9 @@ public class CalendarFragment extends Fragment {
                 daysWithTasks.add(normalizeToStartOfDay(task.dueDate));
             }
         }
+
+        // Add projected recurring tasks
+        daysWithTasks.addAll(getRecurringTaskDays(startMillis, endMillis));
 
         calendarAdapter.setDaysWithTasks(daysWithTasks);
     }
@@ -401,10 +447,23 @@ public class CalendarFragment extends Fragment {
             tvSelectedDateHeader.setVisibility(View.VISIBLE);
         }
 
+        updateFabState();
+
         // Load ALL tasks for selected date (from both tasks tab and calendar tab)
         List<TaskList> tasks = dm.getTasksByDateRange(
                 startOfDay.getTimeInMillis(),
                 endOfDay.getTimeInMillis());
+
+        // Add projected recurring tasks for this specific day
+        List<TaskList> projected = getRecurringForecasts(startOfDay.getTimeInMillis());
+        // Filter out if we already have a real task for this recurring series on this
+        // day
+        // (Simple check: if we have a real task with same title? No, title isn't
+        // unique.)
+        // Ideally we check createdFrom or ID, but projected tasks have ID -1.
+        // For now, just show them. Duplicate detection is complex without lineage
+        // tracking.
+        tasks.addAll(projected);
 
         dayTasks.addAll(tasks);
         taskAdapter.notifyDataSetChanged();
@@ -416,6 +475,163 @@ public class CalendarFragment extends Fragment {
             calendarEmptyState.setVisibility(View.GONE);
             recyclerDayTasks.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * Calculate virtual task instances for a single specific day.
+     */
+    private List<TaskList> getRecurringForecasts(long targetDate) {
+        List<TaskList> results = new ArrayList<>();
+        List<TaskList> allTasks = dm.getAllTasks();
+
+        // Normalize target
+        long normalizedTarget = normalizeToStartOfDay(targetDate);
+        long targetEnd = normalizedTarget + 86400000L - 1;
+
+        // Collect parent IDs that already have a real task on this day
+        Set<Integer> existingParentIds = new HashSet<>();
+        Set<Integer> existingTaskIds = new HashSet<>();
+        for (TaskList t : allTasks) {
+            if (t.dueDate >= normalizedTarget && t.dueDate <= targetEnd) {
+                existingTaskIds.add(t.id);
+                if (t.recurringParentId > 0) {
+                    existingParentIds.add(t.recurringParentId);
+                }
+            }
+        }
+
+        for (TaskList t : allTasks) {
+            // Only look at pending recurring tasks
+            if (t.check == 0 && t.repeatType != null && !t.repeatType.equals("none")) {
+                // If due date is 0 (unscheduled), skip
+                if (t.dueDate == 0)
+                    continue;
+
+                // Skip if this task's due date is already on the target day (handled by DB
+                // query)
+                if (t.dueDate >= normalizedTarget && t.dueDate <= targetEnd)
+                    continue;
+
+                // Skip if a child instance already exists on target day for this parent
+                int parentId = t.recurringParentId > 0 ? t.recurringParentId : t.id;
+                if (existingParentIds.contains(parentId) || existingTaskIds.contains(parentId))
+                    continue;
+
+                // Check if this task recurs on 'targetDate'
+                if (isRecurringMatch(t, normalizedTarget)) {
+                    TaskList virtual = new TaskList();
+                    // Manually copy relevant fields
+                    virtual.id = -1; // Virtual ID
+                    virtual.setTask(t.getTask());
+                    virtual.setCategory(t.getCategory());
+                    virtual.setDueDate(normalizedTarget); // Set to target date
+                    virtual.setTaskTime(t.getTaskTime());
+                    virtual.setTime(t.getTime());
+                    virtual.setRepeatType(t.getRepeatType());
+                    virtual.setRepeatInterval(t.getRepeatInterval());
+                    virtual.setRepeatDays(t.getRepeatDays());
+                    virtual.setUseAlarm(t.getUseAlarm());
+                    virtual.setStarred(t.getIsStarred());
+
+                    results.add(virtual);
+                }
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Get all dates that have recurring tasks in the given range.
+     */
+    private Set<Long> getRecurringTaskDays(long start, long end) {
+        Set<Long> days = new HashSet<>();
+        List<TaskList> allTasks = dm.getAllTasks();
+
+        Calendar cursor = Calendar.getInstance();
+
+        for (TaskList t : allTasks) {
+            if (t.check == 0 && t.repeatType != null && !t.repeatType.equals("none") && t.dueDate > 0) {
+                // Determine next occurrence after 'start'
+                // Optimization: Don't loop from task creation date if it's years ago.
+                // Just check days in the range?
+
+                // Brute force check every day in range? (Max 42 days).
+                // 42 * N_Tasks. If 100 recurring tasks -> 4200 checks. Fast enough.
+
+                for (long d = start; d <= end; d += 86400000L) {
+                    if (d <= t.dueDate)
+                        continue; // Only project future
+                    if (isRecurringMatch(t, d)) {
+                        days.add(d);
+                    }
+                }
+            }
+        }
+        return days;
+    }
+
+    private boolean isRecurringMatch(TaskList task, long targetDate) {
+        Calendar targetCal = Calendar.getInstance();
+        targetCal.setTimeInMillis(targetDate);
+
+        Calendar dueCal = Calendar.getInstance();
+        dueCal.setTimeInMillis(task.dueDate);
+
+        // Fast fail logic - target must be strictly after the original due date
+        if (targetDate <= task.dueDate)
+            return false;
+
+        // Handle custom_days first (before the switch)
+        if ("custom_days".equals(task.repeatType)) {
+            String repeatDays = task.getRepeatDays();
+            if (repeatDays == null || repeatDays.isEmpty())
+                return false;
+            int targetDow = targetCal.get(Calendar.DAY_OF_WEEK);
+            String[] dayParts = repeatDays.split(",");
+            for (String dp : dayParts) {
+                try {
+                    int dayNum = Integer.parseInt(dp.trim());
+                    if (dayNum == targetDow)
+                        return true;
+                } catch (NumberFormatException ignored) {
+                }
+            }
+            return false;
+        }
+
+        switch (task.repeatType) {
+            case "days":
+                long diffDays = (targetDate - task.dueDate) / (24 * 60 * 60 * 1000);
+                // Need to account for DST??
+                // Safest: Use Calendar add loop if interval > 1.
+                // If interval is 1, it matches every day.
+                if (task.repeatInterval == 1)
+                    return true;
+
+                // For interval > 1, allow slight margin or use strict calendar loop?
+                // Let's use strict calendar loop for correctness but optimize.
+                // Actually (diffDays % interval == 0) is usually fine for "days".
+                return diffDays % task.repeatInterval == 0;
+
+            case "weeks":
+                if (targetCal.get(Calendar.DAY_OF_WEEK) != dueCal.get(Calendar.DAY_OF_WEEK))
+                    return false;
+                long diffWeeks = (targetDate - task.dueDate) / (7 * 24 * 60 * 60 * 1000);
+                return diffWeeks % task.repeatInterval == 0;
+
+            case "months":
+                if (targetCal.get(Calendar.DAY_OF_MONTH) != dueCal.get(Calendar.DAY_OF_MONTH))
+                    return false;
+                // Calculate month diff
+                int diffMonths = (targetCal.get(Calendar.YEAR) - dueCal.get(Calendar.YEAR)) * 12 +
+                        (targetCal.get(Calendar.MONTH) - dueCal.get(Calendar.MONTH));
+                return diffMonths > 0 && diffMonths % task.repeatInterval == 0;
+
+            case "years":
+                return targetCal.get(Calendar.DAY_OF_YEAR) == dueCal.get(Calendar.DAY_OF_YEAR) &&
+                        (targetCal.get(Calendar.YEAR) - dueCal.get(Calendar.YEAR)) % task.repeatInterval == 0;
+        }
+        return false;
     }
 
     @Override
@@ -487,6 +703,56 @@ public class CalendarFragment extends Fragment {
         });
 
         dialog.show();
+    }
+
+    private Set<Long> getImportantDays() {
+        Set<Long> millis = new HashSet<>();
+        if (getContext() == null)
+            return millis;
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences("important_dates",
+                android.content.Context.MODE_PRIVATE);
+        Set<String> dateStrings = prefs.getStringSet("dates", new HashSet<>());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        for (String s : dateStrings) {
+            try {
+                java.util.Date d = sdf.parse(s);
+                if (d != null)
+                    millis.add(normalizeToStartOfDay(d.getTime()));
+            } catch (Exception e) {
+            }
+        }
+        return millis;
+    }
+
+    private void updateFabState() {
+        if (selectedDate == null || getContext() == null)
+            return;
+        View view = getView();
+        if (view == null)
+            return;
+
+        com.google.android.material.floatingactionbutton.FloatingActionButton fabMarkImportant = view
+                .findViewById(R.id.fab_mark_important);
+        if (fabMarkImportant == null)
+            return;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateKey = dateFormat.format(selectedDate.getTime());
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences("important_dates",
+                android.content.Context.MODE_PRIVATE);
+        Set<String> importantDates = prefs.getStringSet("dates", new HashSet<>());
+
+        if (importantDates.contains(dateKey)) {
+            // Already important -> Show "Unmark" (Blue bg, Close icon)
+            fabMarkImportant.setImageResource(R.drawable.ic_close);
+            fabMarkImportant.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.primary_blue)));
+        } else {
+            // Not important -> Show "Mark" (Red bg, Add icon)
+            fabMarkImportant.setImageResource(android.R.drawable.ic_input_add);
+            fabMarkImportant.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                    Color.parseColor("#F44336")));
+        }
     }
 
     // Simple adapter for month grid

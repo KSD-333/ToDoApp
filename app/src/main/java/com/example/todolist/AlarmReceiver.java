@@ -19,6 +19,29 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             Log.d(TAG, "Boot completed, rescheduling alarms...");
             rescheduleAlarms(context);
+            // Also schedule midnight alarm and generate today's tasks
+            MidnightTaskScheduler scheduler = new MidnightTaskScheduler(context);
+            scheduler.scheduleMidnightAlarm();
+            DataManager.getInstance(context).generateTodaysRecurringTasks();
+            return;
+        }
+
+        // Handle midnight task generation alarm
+        if (MidnightTaskScheduler.ACTION_MIDNIGHT_TASK_GENERATION.equals(action)) {
+            Log.d(TAG, "Midnight alarm triggered - generating today's recurring tasks");
+            try {
+                DataManager dm = DataManager.getInstance(context);
+                dm.generateTodaysRecurringTasks();
+
+                // Reschedule for next midnight
+                MidnightTaskScheduler scheduler = new MidnightTaskScheduler(context);
+                scheduler.scheduleMidnightAlarm();
+
+                Log.d(TAG, "Today's recurring tasks generated successfully");
+            } catch (Exception e) {
+                Log.e(TAG, "Error generating today's recurring tasks: " + e.getMessage());
+                e.printStackTrace();
+            }
             return;
         }
 

@@ -223,4 +223,18 @@
 
     </LinearLayout>
 
+    <!-- Mark as Important FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_mark_important"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="90dp"
+        android:src="@android:drawable/ic_input_add"
+        app:fabSize="mini"
+        app:backgroundTint="#F44336"
+        app:tint="@color/white"
+        android:contentDescription="Mark date as important" />
+
 </FrameLayout>

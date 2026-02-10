@@ -22,6 +22,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     private Calendar selectedDate;
     private final Set<Long> selectedDays = new HashSet<>(); // normalized start-of-day millis
     private final Set<Long> daysWithTasks = new HashSet<>(); // days that have tasks
+    private final Set<Long> importantDays = new HashSet<>(); // days marked as important
     private Calendar today;
     private Calendar currentMonth;
     private OnDayClickListener listener;
@@ -44,7 +45,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
         this.currentMonth = Calendar.getInstance();
     }
 
-    public CalendarAdapter(Context context, List<Calendar> days, OnDayClickListener listener, OnDayLongClickListener longClickListener) {
+    public CalendarAdapter(Context context, List<Calendar> days, OnDayClickListener listener,
+            OnDayLongClickListener longClickListener) {
         this(context, days, listener);
         this.longClickListener = longClickListener;
     }
@@ -78,13 +80,22 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
 
     public void setSelectedDays(Set<Long> daysStartOfDay) {
         selectedDays.clear();
-        if (daysStartOfDay != null) selectedDays.addAll(daysStartOfDay);
+        if (daysStartOfDay != null)
+            selectedDays.addAll(daysStartOfDay);
         notifyDataSetChanged();
     }
-    
+
     public void setDaysWithTasks(Set<Long> taskDays) {
         daysWithTasks.clear();
-        if (taskDays != null) daysWithTasks.addAll(taskDays);
+        if (taskDays != null)
+            daysWithTasks.addAll(taskDays);
+        notifyDataSetChanged();
+    }
+
+    public void setImportantDays(Set<Long> impDays) {
+        importantDays.clear();
+        if (impDays != null)
+            importantDays.addAll(impDays);
         notifyDataSetChanged();
     }
 
@@ -98,13 +109,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
         Calendar day = days.get(position);
-        
+
         holder.tvDay.setText(String.valueOf(day.get(Calendar.DAY_OF_MONTH)));
-        
+
         boolean isCurrentMonth = day.get(Calendar.MONTH) == currentMonth.get(Calendar.MONTH);
         boolean isToday = isSameDay(day, today);
         boolean isSelected = selectedDays.contains(normalizeToStartOfDay(day.getTimeInMillis()));
-        
+
         // Style based on state
         if (isSelected) {
             holder.tvDay.setBackgroundResource(R.drawable.calendar_selected_bg);
@@ -120,14 +131,23 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 holder.tvDay.setTextColor(ContextCompat.getColor(context, R.color.text_hint));
             }
         }
-        
-        // Show task indicator dot if this day has tasks
+
+        // Show task indicator dot if this day has tasks or is important
         long dayMillis = normalizeToStartOfDay(day.getTimeInMillis());
         boolean hasTasks = daysWithTasks.contains(dayMillis);
+        boolean isImportant = importantDays.contains(dayMillis);
+
+        // Show task indicator dot if this day has tasks
         if (holder.taskIndicator != null) {
             holder.taskIndicator.setVisibility(hasTasks ? View.VISIBLE : View.GONE);
+            holder.taskIndicator.setBackgroundTintList(null); // Reset any tint
         }
-        
+
+        // Show important indicator dot (Red) if important
+        if (holder.importantIndicator != null) {
+            holder.importantIndicator.setVisibility(isImportant ? View.VISIBLE : View.GONE);
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDayClick(day);
@@ -145,8 +165,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
 
     private boolean isSameDay(Calendar day1, Calendar day2) {
         return day1.get(Calendar.YEAR) == day2.get(Calendar.YEAR) &&
-               day1.get(Calendar.MONTH) == day2.get(Calendar.MONTH) &&
-               day1.get(Calendar.DAY_OF_MONTH) == day2.get(Calendar.DAY_OF_MONTH);
+                day1.get(Calendar.MONTH) == day2.get(Calendar.MONTH) &&
+                day1.get(Calendar.DAY_OF_MONTH) == day2.get(Calendar.DAY_OF_MONTH);
     }
 
     private long normalizeToStartOfDay(long millis) {
@@ -167,11 +187,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     static class DayViewHolder extends RecyclerView.ViewHolder {
         TextView tvDay;
         View taskIndicator;
+        View importantIndicator;
 
         public DayViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDay = itemView.findViewById(R.id.tv_day);
             taskIndicator = itemView.findViewById(R.id.task_indicator);
+            importantIndicator = itemView.findViewById(R.id.important_indicator);
         }
     }
 }

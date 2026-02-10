@@ -1,31 +1,83 @@
 package com.example.todolist;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 /**
- * Simple Task model (Room annotations removed)
+ * Task model for Room
  */
+@Entity(tableName = "tasks")
 public class TaskList {
 
+    @PrimaryKey(autoGenerate = true)
     public int id;
-    public int check;
-    public String task;
-    public String time;
-    public String category = "All";
-    public int isStarred = 0;
-    public long dueDate = 0;
-    public String repeatType = "none";
-    public int repeatInterval = 1;
-    public String reminderMinutes = "";
-    public int useAlarm = 0;
-    public int screenLock = 0; // 0 = off, 1 = on
-    public String taskTime = "";
-    public long completedAt = 0;
-    public String markerType;
-    public String markerValue;
-    public int markerColor = 0;
-    public String attachments = ""; // Comma-separated file paths
-    public String repeatDays = ""; // Comma-separated day indices (0-6, Sun-Sat)
-    public String createdFrom = "tasks"; // Source: "tasks" or "calendar"
 
+    @ColumnInfo(name = "check_status")
+    public int check;
+
+    @ColumnInfo(name = "task")
+    public String task;
+
+    @ColumnInfo(name = "time")
+    public String time;
+
+    @ColumnInfo(name = "category")
+    public String category = "All";
+
+    @ColumnInfo(name = "is_starred")
+    public int isStarred = 0;
+
+    @ColumnInfo(name = "due_date")
+    public long dueDate = 0;
+
+    @ColumnInfo(name = "repeat_type")
+    public String repeatType = "none";
+
+    @ColumnInfo(name = "repeat_interval")
+    public int repeatInterval = 1;
+
+    @ColumnInfo(name = "reminder_minutes")
+    public String reminderMinutes = "";
+
+    @ColumnInfo(name = "use_alarm")
+    public int useAlarm = 0;
+
+    @ColumnInfo(name = "screen_lock")
+    public int screenLock = 0; // 0 = off, 1 = on
+
+    @ColumnInfo(name = "task_time")
+    public String taskTime = "";
+    @ColumnInfo(name = "completed_at")
+    public long completedAt = 0;
+
+    @ColumnInfo(name = "marker_type")
+    public String markerType;
+
+    @ColumnInfo(name = "marker_value")
+    public String markerValue;
+
+    @ColumnInfo(name = "marker_color")
+    public int markerColor = 0;
+
+    @ColumnInfo(name = "attachments")
+    public String attachments = "";
+
+    @ColumnInfo(name = "rejection_reason")
+    public String rejectionReason = "";
+
+    @ColumnInfo(name = "repeat_days")
+    public String repeatDays = "";
+
+    @ColumnInfo(name = "created_from")
+    public String createdFrom = "tasks";
+
+    // ID of the parent recurring task (0 if this is the original or non-recurring)
+    @ColumnInfo(name = "recurring_parent_id")
+    public int recurringParentId = 0;
+
+    @Ignore
     public TaskList(int id, int check, String task, String time) {
         this.id = id;
         this.check = check;
@@ -33,12 +85,14 @@ public class TaskList {
         this.time = time;
     }
 
+    @Ignore
     public TaskList(int check, String task, String time) {
         this.check = check;
         this.task = task;
         this.time = time;
     }
 
+    @Ignore
     public TaskList(int check, String task, String time, String category, int isStarred, long dueDate) {
         this.check = check;
         this.task = task;
@@ -51,11 +105,19 @@ public class TaskList {
     public TaskList() {
     }
 
+    @Ignore
     public TaskList(String task) {
         this.task = task;
         this.check = 0;
         this.time = "";
     }
+
+    // UI-only fields for date headers (not stored in DB)
+    @Ignore
+    public boolean isHeader = false;
+
+    @Ignore
+    public String headerTitle = "";
 
     // Getters and setters
     public int getId() {
@@ -196,5 +258,21 @@ public class TaskList {
 
     public void setCreatedFrom(String createdFrom) {
         this.createdFrom = createdFrom;
+    }
+
+    public int getRecurringParentId() {
+        return recurringParentId;
+    }
+
+    public void setRecurringParentId(int recurringParentId) {
+        this.recurringParentId = recurringParentId;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

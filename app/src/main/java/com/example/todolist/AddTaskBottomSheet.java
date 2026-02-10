@@ -285,6 +285,22 @@ public class AddTaskBottomSheet extends BottomSheetDialogFragment {
         selectedRepeatType = editingTask.repeatType != null ? editingTask.repeatType : "none";
         selectedRepeatInterval = editingTask.repeatInterval;
 
+        // Restore weekday selection from repeatDays
+        if ("custom_days".equals(selectedRepeatType) && editingTask.repeatDays != null
+                && !editingTask.repeatDays.isEmpty()) {
+            java.util.Arrays.fill(selectedWeekdays, false);
+            String[] dayParts = editingTask.repeatDays.split(",");
+            for (String dp : dayParts) {
+                try {
+                    int dayNum = Integer.parseInt(dp.trim());
+                    if (dayNum >= 1 && dayNum <= 7) {
+                        selectedWeekdays[dayNum - 1] = true;
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+
         // Parse reminders
         if (editingTask.reminderMinutes != null && !editingTask.reminderMinutes.isEmpty()) {
             String[] parts = editingTask.reminderMinutes.split(",");
@@ -1000,6 +1016,8 @@ public class AddTaskBottomSheet extends BottomSheetDialogFragment {
 
             editingTask.setRepeatType(selectedRepeatType);
             editingTask.setRepeatInterval(selectedRepeatInterval);
+            // Save custom weekday selections as repeatDays
+            editingTask.setRepeatDays(buildRepeatDaysString());
             editingTask.setTaskTime(selectedTime);
             editingTask.setReminderMinutes(reminderMinutesStr);
             editingTask.setUseAlarm(useAlarm ? 1 : 0);
@@ -1070,6 +1088,8 @@ public class AddTaskBottomSheet extends BottomSheetDialogFragment {
                 newTask.setDueDate(dueMs);
                 newTask.setRepeatType(selectedRepeatType);
                 newTask.setRepeatInterval(selectedRepeatInterval);
+                // Save custom weekday selections as repeatDays
+                newTask.setRepeatDays(buildRepeatDaysString());
                 newTask.setStarred(0);
                 newTask.setStatus(0);
                 newTask.setTaskTime(selectedTime);
@@ -2118,5 +2138,26 @@ public class AddTaskBottomSheet extends BottomSheetDialogFragment {
         }
 
         dialog.show();
+    }
+
+    /**
+     * Builds a comma-separated string of Calendar day-of-week constants
+     * (1=Sunday..7=Saturday)
+     * from the selectedWeekdays boolean array.
+     * Returns empty string if repeatType is not "custom_days" or no days selected.
+     */
+    private String buildRepeatDaysString() {
+        if (!"custom_days".equals(selectedRepeatType)) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 7; i++) {
+            if (selectedWeekdays[i]) {
+                if (sb.length() > 0)
+                    sb.append(",");
+                sb.append(i + 1); // Calendar.SUNDAY=1 .. Calendar.SATURDAY=7
+            }
+        }
+        return sb.toString();
     }
 }

@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             dm = DataManager.getInstance(this);
             storageManager = new TaskStorageManager(this);
+            storageManager.checkAndMigrateData(); // Check if migration is needed
             autoSaveHandler = new android.os.Handler();
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setupNavigation();
             setupBackPressHandler();
             startAutoSave();
-            requestNotificationPermission();
+            requestPermissions();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,7 +117,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             try {
                 if (dm != null) {
                     dm.initializeDefaultData();
+                    // Generate today's recurring task instances
+                    dm.generateTodaysRecurringTasks();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                // Schedule the midnight alarm for daily task generation
+                MidnightTaskScheduler scheduler = new MidnightTaskScheduler(MainActivity.this);
+                scheduler.scheduleMidnightAlarm();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -188,6 +198,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             android.content.SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
             int mode = prefs.getInt("night_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             AppCompatDelegate.setDefaultNightMode(mode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final int STORAGE_PERMISSION_CODE = 101; // Added Storage Permission Code
+
+    private void requestPermissions() {
+        requestNotificationPermission();
+        requestStoragePermission();
+    }
+
+    private void requestStoragePermission() {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                // Android 11 (API 30) and above
+                if (!android.os.Environment.isExternalStorageManager()) {
+                    try {
+                        Intent intent = new Intent(
+                                android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setData(android.net.Uri
+                                .parse(String.format("package:%s", getApplicationContext().getPackageName())));
+                        startActivityForResult(intent, STORAGE_PERMISSION_CODE);
+                    } catch (Exception e) {
+                        Intent intent = new Intent();
+                        intent.setAction(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startActivityForResult(intent, STORAGE_PERMISSION_CODE);
+                    }
+                }
+            } else {
+                // Below Android 11
+                if (checkSelfPermission(
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[] { android.Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                            STORAGE_PERMISSION_CODE);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -344,6 +392,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void openTasksFromMine(int filterType) {
+        if (filterType == 1) {
+            // Open separate Completed Tasks Activity for better view
+            Intent intent = new Intent(this, CompletedTasksActivity.class);
+            startActivity(intent);
+            return;
+        }
+
         if (tasksFragment == null) {
             tasksFragment = TasksFragment.newInstance();
         }
@@ -356,9 +411,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Apply filter after fragment view is created
         getWindow().getDecorView().post(() -> {
-            if (filterType == 1) {
-                tasksFragment.showCompletedFromMine();
-            } else if (filterType == 2) {
+            if (filterType == 2) {
                 tasksFragment.showOverdueFromMine();
             } else {
                 tasksFragment.showPendingFromMine();
@@ -639,6 +692,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         applyBackground();
+        try {
+            if (dm != null) {
+                dm.checkAndHandleMissedRecurrences();
+                // Also ensure today's recurring tasks are generated
+                dm.generateTodaysRecurringTasks();
+                // Refresh fragments if visible
+                if (tasksFragment != null && tasksFragment.isVisible()) {
+                    tasksFragment.loadTasks();
+                }
+                if (calendarFragment != null && calendarFragment.isVisible()) {
+                    // Start a new transaction to refresh or expose a refresh method
+                    // best to just let the fragment handle it in its onResume,
+                    // but we need to signal data changed?
+                    // Fragments usually reload in their own onResume.
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showWidgetInfo() {
