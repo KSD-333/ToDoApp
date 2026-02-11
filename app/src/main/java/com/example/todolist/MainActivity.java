@@ -95,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             MidnightTaskScheduler scheduler = new MidnightTaskScheduler(MainActivity.this);
             scheduler.scheduleMidnightAlarm();
             refreshNavigationCategories();
+
+            // Reschedule all reminders from DB to ensure sync
+            if (notificationHelper != null) {
+                notificationHelper.rescheduleAllReminders();
+            }
         }).start();
 
         // Load default fragment
@@ -153,6 +158,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void requestPermissions() {
         requestNotificationPermission();
         requestStoragePermission();
+        checkExactAlarmPermission();
+    }
+
+    private void checkExactAlarmPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            android.app.AlarmManager alarmManager = (android.app.AlarmManager) getSystemService(
+                    android.content.Context.ALARM_SERVICE);
+            if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
+                try {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    intent.setData(android.net.Uri.parse("package:" + getPackageName()));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void requestStoragePermission() {

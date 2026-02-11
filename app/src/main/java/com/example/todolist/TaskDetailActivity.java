@@ -724,7 +724,8 @@ public class TaskDetailActivity extends AppCompatActivity {
             // Cancel old reminders and schedule new ones
             NotificationHelper notificationHelper = new NotificationHelper(this);
             notificationHelper.cancelReminders(task.id);
-            if (task.dueDate > 0 && task.taskTime != null && !task.taskTime.isEmpty() && task.reminderMinutes != null
+            if ((task.dueDate > 0 || (task.dueDate == 0 && task.taskTime != null && !task.taskTime.isEmpty()))
+                    && task.taskTime != null && !task.taskTime.isEmpty() && task.reminderMinutes != null
                     && !task.reminderMinutes.isEmpty()) {
                 notificationHelper.scheduleReminders(
                         task.id,

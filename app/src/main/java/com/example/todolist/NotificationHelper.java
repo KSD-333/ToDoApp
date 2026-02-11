@@ -79,8 +79,26 @@ public class NotificationHelper {
      */
     public void scheduleReminders(int taskId, String taskName, long dueDate, String taskTime,
             String reminderMinutes, boolean useAlarm, boolean useScreenLock) {
-        if (dueDate == 0 || taskTime == null || taskTime.isEmpty()) {
-            Log.d("NotificationHelper", "No date or time set, skipping reminders");
+
+        // Handle "No Date" (0) by assuming Today if Time is set
+        long effectiveDueDate = dueDate;
+        boolean isNoDate = (dueDate == 0);
+
+        if (isNoDate) {
+            if (taskTime != null && !taskTime.isEmpty()) {
+                Calendar nowCal = Calendar.getInstance();
+                nowCal.set(Calendar.HOUR_OF_DAY, 0);
+                nowCal.set(Calendar.MINUTE, 0);
+                nowCal.set(Calendar.SECOND, 0);
+                nowCal.set(Calendar.MILLISECOND, 0);
+                effectiveDueDate = nowCal.getTimeInMillis();
+            } else {
+                Log.d("NotificationHelper", "No date or time set, skipping reminders");
+                return;
+            }
+        } else if (taskTime == null || taskTime.isEmpty()) {
+            // Date is set but no time -> skip
+            Log.d("NotificationHelper", "No time set, skipping reminders");
             return;
         }
 
@@ -120,7 +138,7 @@ public class NotificationHelper {
 
             // Create the full due datetime
             Calendar dueDateTime = Calendar.getInstance();
-            dueDateTime.setTimeInMillis(dueDate);
+            dueDateTime.setTimeInMillis(effectiveDueDate);
             dueDateTime.set(Calendar.HOUR_OF_DAY, hour);
             dueDateTime.set(Calendar.MINUTE, minute);
             dueDateTime.set(Calendar.SECOND, 0);
@@ -145,12 +163,28 @@ public class NotificationHelper {
                     try {
                         int mins = Integer.parseInt(reminderArray[i].trim());
                         long reminderTime = dueDateTime.getTimeInMillis() - (mins * 60 * 1000L);
+                        long now = System.currentTimeMillis();
 
                         // Only schedule if in the future
-                        if (reminderTime > System.currentTimeMillis()) {
+                        if (reminderTime > now) {
                             scheduleAlarm(taskId * 100 + i, taskName, reminderTime, mins, useAlarm, useScreenLock);
                             Log.d("NotificationHelper",
                                     "Scheduled reminder for " + mins + " mins before at " + reminderTime);
+                        } else {
+                            // Catch-up logic: If reminder missed recently (within 30 mins)
+                            // AND the task itself is not completely ancient (e.g. within 2 hours of due
+                            // time)
+                            long timeSinceReminder = now - reminderTime;
+                            boolean isRecentMiss = timeSinceReminder > 0 && timeSinceReminder < 30 * 60 * 1000L;
+
+                            if (isRecentMiss) {
+                                Log.d("NotificationHelper",
+                                        "Reminder caught up: firing immediately for " + mins + " min reminder");
+                                showNotification(context, taskId * 100 + i, taskName, mins, useAlarm, useScreenLock);
+                            } else {
+                                Log.d("NotificationHelper",
+                                        "Reminder time " + reminderTime + " passed too long ago or invalid");
+                            }
                         }
                     } catch (NumberFormatException e) {
                         Log.e("NotificationHelper", "Invalid reminder minutes: " + reminderArray[i]);
@@ -378,5 +412,51 @@ public class NotificationHelper {
             }
             wakeLock = null;
         }
+    }
+
+    /**
+     * Reschedule all reminders from the database.
+     * Use this on boot or app startup to ensure alarms are synced.
+     */
+    public void rescheduleAllReminders() {
+        new Thread(() -> {
+            try {
+                DataManager dm = DataManager.getInstance(context);
+                java.util.List<TaskList> tasks = dm.getAllTasks();
+                long now = System.currentTimeMillis();
+                int count = 0;
+
+                for (TaskList task : tasks) {
+                    // Check if task is pending and due in the future (or recently past for
+                    // catch-up)
+                    // We check if due date is within the last 24 hours or future
+                    if (task.check == 0) {
+                        boolean isFutureDate = task.dueDate > (now - 86400000);
+                        boolean isNoDateWithTime = (task.dueDate == 0 && task.taskTime != null
+                                && !task.taskTime.isEmpty());
+
+                        if (isFutureDate || isNoDateWithTime) {
+                            boolean hasReminders = task.reminderMinutes != null && !task.reminderMinutes.isEmpty();
+                            boolean useAlarm = task.useAlarm == 1;
+
+                            if (hasReminders || useAlarm) {
+                                scheduleReminders(
+                                        task.id,
+                                        task.task,
+                                        task.dueDate,
+                                        task.taskTime,
+                                        task.reminderMinutes,
+                                        useAlarm,
+                                        task.screenLock == 1);
+                                count++;
+                            }
+                        }
+                    }
+                }
+                Log.d("NotificationHelper", "Rescheduled " + count + " alarms from DB");
+            } catch (Exception e) {
+                Log.e("NotificationHelper", "Error rescheduling alarms: " + e.getMessage());
+            }
+        }).start();
     }
 }

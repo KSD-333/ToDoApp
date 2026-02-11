@@ -73,37 +73,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void rescheduleAlarms(Context context) {
         try {
-            DataManager dm = DataManager.getInstance(context);
-            List<TaskList> tasks = dm.getAllTasks();
             NotificationHelper helper = new NotificationHelper(context);
-
-            long now = System.currentTimeMillis();
-            int count = 0;
-
-            for (TaskList task : tasks) {
-                // Check if task is pending and due in the future (or today)
-                if (task.check == 0 && task.dueDate > (now - 86400000)) {
-                    boolean hasReminders = task.reminderMinutes != null && !task.reminderMinutes.isEmpty();
-                    boolean useAlarm = task.useAlarm == 1;
-
-                    if (hasReminders || useAlarm) {
-                        try {
-                            helper.scheduleReminders(
-                                    task.id,
-                                    task.task,
-                                    task.dueDate,
-                                    task.taskTime,
-                                    task.reminderMinutes,
-                                    useAlarm,
-                                    task.screenLock == 1);
-                            count++;
-                        } catch (Exception e) {
-                            Log.e(TAG, "Failed to schedule for task " + task.id + ": " + e.getMessage());
-                        }
-                    }
-                }
-            }
-            Log.d(TAG, "Rescheduled " + count + " alarms");
+            helper.rescheduleAllReminders();
         } catch (Exception e) {
             Log.e(TAG, "Error rescheduling alarms: " + e.getMessage());
             e.printStackTrace();
