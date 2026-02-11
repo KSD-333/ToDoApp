@@ -934,11 +934,28 @@ public class DataManager {
      */
     private long calculateTodayDueDate(TaskList task, long todayStart) {
         if (task.taskTime != null && !task.taskTime.isEmpty()) {
-            // Parse taskTime (format: "HH:mm")
+            // Parse taskTime (format: "HH:mm" or "h:mm AM/PM")
             try {
-                String[] parts = task.taskTime.split(":");
-                int hour = Integer.parseInt(parts[0]);
-                int minute = Integer.parseInt(parts[1]);
+                String cleanTime = task.taskTime.toUpperCase()
+                        .replace(" AM", "")
+                        .replace(" PM", "")
+                        .replace("AM", "")
+                        .replace("PM", "")
+                        .trim();
+
+                boolean isPM = task.taskTime.toUpperCase().contains("PM");
+                boolean isAM = task.taskTime.toUpperCase().contains("AM");
+
+                String[] parts = cleanTime.split(":");
+                int hour = Integer.parseInt(parts[0].trim());
+                int minute = Integer.parseInt(parts[1].trim());
+
+                // Convert to 24-hour format
+                if (isPM && hour != 12) {
+                    hour += 12;
+                } else if (isAM && hour == 12) {
+                    hour = 0;
+                }
 
                 java.util.Calendar cal = java.util.Calendar.getInstance();
                 cal.setTimeInMillis(todayStart);
@@ -949,6 +966,7 @@ public class DataManager {
                 return cal.getTimeInMillis();
             } catch (Exception e) {
                 // Fall through to default
+                android.util.Log.e("DataManager", "Error parsing time in calculateTodayDueDate: " + e.getMessage());
             }
         }
 

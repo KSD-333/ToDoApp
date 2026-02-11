@@ -301,6 +301,7 @@ public class NotificationHelper {
     }
 
     private static MediaPlayer alarmMediaPlayer;
+    private static android.os.PowerManager.WakeLock wakeLock;
 
     /**
      * Play alarm sound for specified duration
@@ -309,6 +310,11 @@ public class NotificationHelper {
         try {
             // Stop any existing alarm
             stopAlarmSound();
+
+            // Acquire WakeLock to keep CPU running while alarm plays
+            android.os.PowerManager pm = (android.os.PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "ToDoList:AlarmWakeLock");
+            wakeLock.acquire(durationMs + 5000); // Acquire with timeout slightly longer than duration
 
             Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             if (alarmUri == null) {
@@ -336,6 +342,11 @@ public class NotificationHelper {
             Log.d("NotificationHelper", "Alarm sound started for " + durationMs + "ms");
         } catch (Exception e) {
             Log.e("NotificationHelper", "Error playing alarm sound: " + e.getMessage());
+            // Ensure wakelock is released if error occurs
+            if (wakeLock != null && wakeLock.isHeld()) {
+                wakeLock.release();
+                wakeLock = null;
+            }
         }
     }
 
@@ -354,6 +365,18 @@ public class NotificationHelper {
             } catch (Exception e) {
                 Log.e("NotificationHelper", "Error stopping alarm: " + e.getMessage());
             }
+        }
+
+        // Release WakeLock
+        if (wakeLock != null) {
+            try {
+                if (wakeLock.isHeld()) {
+                    wakeLock.release();
+                }
+            } catch (Exception e) {
+                Log.e("NotificationHelper", "Error releasing wakelock: " + e.getMessage());
+            }
+            wakeLock = null;
         }
     }
 }
