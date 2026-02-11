@@ -195,7 +195,7 @@ public class NotificationHelper {
             // Schedule interval reminders
             if (intervalMinutes > 0) {
                 Calendar endOfDay = Calendar.getInstance();
-                endOfDay.setTimeInMillis(dueDate);
+                endOfDay.setTimeInMillis(effectiveDueDate);
                 endOfDay.set(Calendar.HOUR_OF_DAY, 23);
                 endOfDay.set(Calendar.MINUTE, 59);
                 endOfDay.set(Calendar.SECOND, 59);

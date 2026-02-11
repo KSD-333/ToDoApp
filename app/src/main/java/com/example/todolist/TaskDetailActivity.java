@@ -633,9 +633,9 @@ public class TaskDetailActivity extends AppCompatActivity {
         });
 
         // Helper to update reminder option enabled state based on time
-        final String[] reminderOptions = { "5 minutes before", "10 minutes before", "15 minutes before",
+        final String[] reminderOptions = { "Exact time", "5 minutes before", "10 minutes before", "15 minutes before",
                 "30 minutes before", "1 hour before" };
-        final String[] reminderValues = { "5", "10", "15", "30", "60" };
+        final String[] reminderValues = { "0", "5", "10", "15", "30", "60" };
 
         Runnable updateReminderOptionState = () -> {
             boolean timeSet = !tempTime[0].isEmpty();
@@ -1203,9 +1203,9 @@ public class TaskDetailActivity extends AppCompatActivity {
         final boolean[] localScreenLock = { tempScreenLock[0] };
         final String[] localInterval = { intervalPart.isEmpty() ? "0" : intervalPart };
 
-        final String[] reminderOptions = { "5 minutes before", "10 minutes before", "15 minutes before",
+        final String[] reminderOptions = { "Exact time", "5 minutes before", "10 minutes before", "15 minutes before",
                 "30 minutes before", "1 hour before" };
-        final String[] reminderValues = { "5", "10", "15", "30", "60" };
+        final String[] reminderValues = { "0", "5", "10", "15", "30", "60" };
 
         final String[] intervalOptions = { "Off", "Every 15 minutes", "Every 30 minutes", "Every 1 hour",
                 "Every 2 hours", "Every 3 hours", "Custom" };
