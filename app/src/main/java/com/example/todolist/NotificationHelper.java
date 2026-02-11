@@ -126,23 +126,57 @@ public class NotificationHelper {
             dueDateTime.set(Calendar.SECOND, 0);
             dueDateTime.set(Calendar.MILLISECOND, 0);
 
-            // Schedule each reminder
-            String[] reminderArray = reminderMinutes.split(",");
-            for (int i = 0; i < reminderArray.length; i++) {
+            // Parse interval if present
+            String[] configParts = reminderMinutes.split("\\|interval:");
+            String standardReminders = configParts[0];
+            int intervalMinutes = 0;
+            if (configParts.length > 1) {
                 try {
-                    int mins = Integer.parseInt(reminderArray[i].trim());
-                    long reminderTime = dueDateTime.getTimeInMillis() - (mins * 60 * 1000L);
-
-                    // Only schedule if in the future
-                    if (reminderTime > System.currentTimeMillis()) {
-                        scheduleAlarm(taskId * 100 + i, taskName, reminderTime, mins, useAlarm, useScreenLock);
-                        Log.d("NotificationHelper",
-                                "Scheduled reminder for " + mins + " mins before at " + reminderTime);
-                    } else {
-                        Log.d("NotificationHelper", "Reminder time already passed for " + mins + " mins before");
-                    }
+                    intervalMinutes = Integer.parseInt(configParts[1].trim());
                 } catch (NumberFormatException e) {
-                    Log.e("NotificationHelper", "Invalid reminder minutes: " + reminderArray[i]);
+                    Log.e("NotificationHelper", "Invalid interval format");
+                }
+            }
+
+            // Schedule each standard reminder
+            if (!standardReminders.isEmpty()) {
+                String[] reminderArray = standardReminders.split(",");
+                for (int i = 0; i < reminderArray.length; i++) {
+                    try {
+                        int mins = Integer.parseInt(reminderArray[i].trim());
+                        long reminderTime = dueDateTime.getTimeInMillis() - (mins * 60 * 1000L);
+
+                        // Only schedule if in the future
+                        if (reminderTime > System.currentTimeMillis()) {
+                            scheduleAlarm(taskId * 100 + i, taskName, reminderTime, mins, useAlarm, useScreenLock);
+                            Log.d("NotificationHelper",
+                                    "Scheduled reminder for " + mins + " mins before at " + reminderTime);
+                        }
+                    } catch (NumberFormatException e) {
+                        Log.e("NotificationHelper", "Invalid reminder minutes: " + reminderArray[i]);
+                    }
+                }
+            }
+
+            // Schedule interval reminders
+            if (intervalMinutes > 0) {
+                Calendar endOfDay = Calendar.getInstance();
+                endOfDay.setTimeInMillis(dueDate);
+                endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+                endOfDay.set(Calendar.MINUTE, 59);
+                endOfDay.set(Calendar.SECOND, 59);
+
+                long nextTime = dueDateTime.getTimeInMillis() + (intervalMinutes * 60 * 1000L);
+                int count = 0;
+                // Schedule up to 40 intervals or until end of day
+                while (nextTime <= endOfDay.getTimeInMillis() && count < 40) {
+                    if (nextTime > System.currentTimeMillis()) {
+                        // Use offset 50+ for interval alarms
+                        scheduleAlarm(taskId * 100 + 50 + count, taskName, nextTime, 0, useAlarm, useScreenLock);
+                        Log.d("NotificationHelper", "Scheduled interval reminder " + count + " at " + nextTime);
+                    }
+                    nextTime += (intervalMinutes * 60 * 1000L);
+                    count++;
                 }
             }
         } catch (Exception e) {
@@ -206,7 +240,7 @@ public class NotificationHelper {
      * Cancel reminders for a task using a safe default range.
      */
     public void cancelReminders(int taskId) {
-        cancelReminders(taskId, 50);
+        cancelReminders(taskId, 100);
     }
 
     /**

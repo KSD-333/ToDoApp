@@ -1177,17 +1177,38 @@ public class TaskDetailActivity extends AppCompatActivity {
         TextView tvReminderTypeValue = dialogView.findViewById(R.id.tv_reminder_type_value);
         LinearLayout screenlockOption = dialogView.findViewById(R.id.screenlock_option);
         TextView tvScreenlockValue = dialogView.findViewById(R.id.tv_screenlock_value);
+        LinearLayout intervalOption = dialogView.findViewById(R.id.interval_option); // Newly added view
+        TextView tvIntervalValue = dialogView.findViewById(R.id.tv_interval_value); // Newly added view
         View btnCancel = dialogView.findViewById(R.id.btn_cancel);
         View btnDone = dialogView.findViewById(R.id.btn_done);
 
-        final boolean[] localReminderOn = { !tempReminder[0].isEmpty() || tempUseAlarm[0] > 0 };
-        final String[] localReminderMinutes = { tempReminder[0].isEmpty() ? "5" : tempReminder[0] };
+        // Parse existing reminder string
+        String rawReminder = tempReminder[0];
+        String minutesPart = "";
+        String intervalPart = "";
+
+        if (rawReminder.contains("|interval:")) {
+            String[] parts = rawReminder.split("\\|interval:");
+            minutesPart = parts[0];
+            if (parts.length > 1)
+                intervalPart = parts[1];
+        } else {
+            minutesPart = rawReminder;
+        }
+
+        final boolean[] localReminderOn = { !minutesPart.isEmpty() || tempUseAlarm[0] > 0 };
+        final String[] localReminderMinutes = { minutesPart.isEmpty() ? "5" : minutesPart };
         final String[] localReminderType = { tempUseAlarm[0] > 0 ? "alarm" : "notification" };
         final boolean[] localScreenLock = { tempScreenLock[0] };
+        final String[] localInterval = { intervalPart.isEmpty() ? "0" : intervalPart };
 
         final String[] reminderOptions = { "5 minutes before", "10 minutes before", "15 minutes before",
                 "30 minutes before", "1 hour before" };
         final String[] reminderValues = { "5", "10", "15", "30", "60" };
+
+        final String[] intervalOptions = { "Off", "Every 15 minutes", "Every 30 minutes", "Every 1 hour",
+                "Every 2 hours", "Every 3 hours", "Custom" };
+        final String[] intervalValues = { "0", "15", "30", "60", "120", "180", "-1" };
 
         Runnable updateUI = () -> {
             switchReminder.setChecked(localReminderOn[0]);
@@ -1204,13 +1225,33 @@ public class TaskDetailActivity extends AppCompatActivity {
             tvReminderTypeValue.setText(localReminderType[0].equals("alarm") ? "Alarm" : "Notification");
             tvScreenlockValue.setText(localScreenLock[0] ? "On" : "Off");
 
+            // Interval Text
+            String intervalDisplay = "Off";
+            boolean found = false;
+            for (int i = 0; i < intervalValues.length; i++) {
+                if (intervalValues[i].equals(localInterval[0])) {
+                    intervalDisplay = intervalOptions[i];
+                    found = true;
+                    break;
+                }
+            }
+            if (!found && !localInterval[0].equals("0")) {
+                intervalDisplay = "Every " + localInterval[0] + " minutes";
+            }
+            tvIntervalValue.setText(intervalDisplay);
+
             float alpha = localReminderOn[0] ? 1.0f : 0.5f;
             reminderAtOption.setAlpha(alpha);
             reminderTypeOption.setAlpha(alpha);
             screenlockOption.setAlpha(alpha);
+            if (intervalOption != null)
+                intervalOption.setAlpha(alpha);
+
             reminderAtOption.setClickable(localReminderOn[0]);
             reminderTypeOption.setClickable(localReminderOn[0]);
             screenlockOption.setClickable(localReminderOn[0]);
+            if (intervalOption != null)
+                intervalOption.setClickable(localReminderOn[0]);
         };
 
         updateUI.run();
@@ -1223,7 +1264,6 @@ public class TaskDetailActivity extends AppCompatActivity {
         reminderAtOption.setOnClickListener(v -> {
             if (!localReminderOn[0])
                 return;
-
             int currentIndex = 0;
             for (int i = 0; i < reminderValues.length; i++) {
                 if (reminderValues[i].equals(localReminderMinutes[0])) {
@@ -1240,7 +1280,6 @@ public class TaskDetailActivity extends AppCompatActivity {
         reminderTypeOption.setOnClickListener(v -> {
             if (!localReminderOn[0])
                 return;
-
             String[] typeOptions = { "Notification", "Alarm" };
             int currentIndex = localReminderType[0].equals("alarm") ? 1 : 0;
             showDropdownDialog(typeOptions, currentIndex, index -> {
@@ -1252,7 +1291,6 @@ public class TaskDetailActivity extends AppCompatActivity {
         screenlockOption.setOnClickListener(v -> {
             if (!localReminderOn[0])
                 return;
-
             String[] screenlockOptions = { "Off", "On" };
             int currentIndex = localScreenLock[0] ? 1 : 0;
             showDropdownDialog(screenlockOptions, currentIndex, index -> {
@@ -1261,11 +1299,66 @@ public class TaskDetailActivity extends AppCompatActivity {
             });
         });
 
+        if (intervalOption != null) {
+            intervalOption.setOnClickListener(v -> {
+                if (!localReminderOn[0])
+                    return;
+                int currentIndex = 0;
+                boolean found = false;
+                for (int i = 0; i < intervalValues.length; i++) {
+                    if (intervalValues[i].equals(localInterval[0])) {
+                        currentIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found && !localInterval[0].equals("0")) {
+                    currentIndex = intervalValues.length - 1; // Custom
+                }
+
+                showDropdownDialog(intervalOptions, currentIndex, index -> {
+                    String selectedVal = intervalValues[index];
+                    if (selectedVal.equals("-1")) {
+                        // Show Custom Input Dialog
+                        final EditText input = new EditText(this);
+                        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+                        input.setHint("Enter minutes (e.g. 45)");
+                        new AlertDialog.Builder(this)
+                                .setTitle("Custom Interval")
+                                .setView(input)
+                                .setPositiveButton("OK", (d, w) -> {
+                                    String val = input.getText().toString().trim();
+                                    if (!val.isEmpty()) {
+                                        try {
+                                            int mins = Integer.parseInt(val);
+                                            if (mins > 0) {
+                                                localInterval[0] = String.valueOf(mins);
+                                                updateUI.run();
+                                            }
+                                        } catch (NumberFormatException ignored) {
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    } else {
+                        localInterval[0] = selectedVal;
+                        updateUI.run();
+                    }
+                });
+            });
+        }
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnDone.setOnClickListener(v -> {
             if (localReminderOn[0]) {
-                tempReminder[0] = localReminderMinutes[0];
+                String minutes = localReminderMinutes[0];
+                if (!localInterval[0].equals("0")) {
+                    minutes = minutes + "|interval:" + localInterval[0];
+                }
+                tempReminder[0] = minutes;
+
                 tempUseAlarm[0] = localReminderType[0].equals("alarm") ? 1 : 0;
                 tempScreenLock[0] = localScreenLock[0];
 
@@ -1276,6 +1369,21 @@ public class TaskDetailActivity extends AppCompatActivity {
                         break;
                     }
                 }
+                if (!localInterval[0].equals("0")) {
+                    String intDisplay = "";
+                    for (int i = 0; i < intervalValues.length; i++) {
+                        if (intervalValues[i].equals(localInterval[0])) {
+                            intDisplay = intervalOptions[i].replace("Every ", "").replace(" minutes", "m")
+                                    .replace(" hour", "h").replace("s", "");
+                            break;
+                        }
+                    }
+                    if (intDisplay.isEmpty()) {
+                        intDisplay = localInterval[0] + "m";
+                    }
+                    reminderDisplay += " + " + intDisplay;
+                }
+
                 tvReminderValue.setText(reminderDisplay);
             } else {
                 tempReminder[0] = "";

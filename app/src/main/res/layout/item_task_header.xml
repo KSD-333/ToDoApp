@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingVertical="12dp"
-    android:paddingHorizontal="16dp"
-    android:background="@color/background_light_gray">
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
+    android:paddingHorizontal="16dp">
 
     <TextView
         android:id="@+id/tv_header_title"
@@ -16,6 +16,9 @@
         android:textColor="@color/primary_blue"
         android:textSize="14sp"
         android:textStyle="bold"
+        android:background="@drawable/chip_unselected_bg"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
         android:letterSpacing="0.05"/>
 
 </LinearLayout>

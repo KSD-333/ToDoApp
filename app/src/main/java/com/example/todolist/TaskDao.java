@@ -34,4 +34,13 @@ public interface TaskDao {
 
     @Query("DELETE FROM tasks WHERE id = :id")
     void deleteById(int id);
+
+    @Query("SELECT COUNT(*) FROM tasks WHERE check_status = 0")
+    int getPendingTaskCount();
+
+    @Query("SELECT COUNT(*) FROM tasks WHERE check_status = 0 AND category LIKE :category")
+    int getPendingTaskCountByCategory(String category);
+
+    @Query("SELECT COUNT(*) FROM tasks WHERE check_status = 0 AND (category IS NULL OR category = '' OR category = 'No Category')")
+    int getPendingTaskCountNoCategory();
 }

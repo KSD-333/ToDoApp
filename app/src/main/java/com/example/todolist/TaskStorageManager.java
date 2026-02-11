@@ -179,6 +179,7 @@ public class TaskStorageManager {
             if (showToasts) {
                 showToast("Tasks exported successfully", Toast.LENGTH_LONG);
             }
+            getDataManager().clearDataDirty();
             return true;
 
         } catch (Exception e) {

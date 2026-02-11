@@ -190,9 +190,31 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                 boolean isOverdue = false;
                 if (task.check == 0 && task.dueDate > 0) {
                     if (task.dueDate < todayStart) {
-                        isOverdue = true; // Past date
-                    } else if (task.dueDate < now && task.taskTime != null && !task.taskTime.isEmpty()) {
-                        isOverdue = true; // Today, time passed
+                        isOverdue = true; // Past date (Yesterday or earlier)
+                    } else if (task.dueDate == todayStart && task.taskTime != null && !task.taskTime.isEmpty()) {
+                        // It is TODAY. Check time explicitly.
+                        // Currently logic might have been marking all today tasks as overdue if now >
+                        // midnight
+                        try {
+                            // Try parsing "h:mm a" (e.g. 7:45 PM)
+                            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
+                            Date timeDate = sdf.parse(task.taskTime);
+                            if (timeDate != null) {
+                                java.util.Calendar timeCal = java.util.Calendar.getInstance();
+                                timeCal.setTime(timeDate);
+
+                                java.util.Calendar dueCal = java.util.Calendar.getInstance();
+                                dueCal.setTimeInMillis(task.dueDate);
+                                dueCal.set(java.util.Calendar.HOUR_OF_DAY, timeCal.get(java.util.Calendar.HOUR_OF_DAY));
+                                dueCal.set(java.util.Calendar.MINUTE, timeCal.get(java.util.Calendar.MINUTE));
+
+                                if (dueCal.getTimeInMillis() < now) {
+                                    isOverdue = true;
+                                }
+                            }
+                        } catch (Exception e) {
+                            // Fallback: If parse fails, don't mark as overdue just yet to be safe
+                        }
                     }
                 }
 

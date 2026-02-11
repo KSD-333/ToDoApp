@@ -60,103 +60,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try {
-            applySavedTheme();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        applySavedTheme();
         super.onCreate(savedInstanceState);
 
-        try {
-            ToDoListApp.showCrashIfPresent(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ToDoListApp.showCrashIfPresent(this);
 
-        try {
-            EdgeToEdge.enable(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
 
-        try {
-            applySystemBars();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        applySystemBars();
 
-        try {
-            dm = DataManager.getInstance(this);
-            storageManager = new TaskStorageManager(this);
-            storageManager.checkAndMigrateData(); // Check if migration is needed
-            autoSaveHandler = new android.os.Handler();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dm = DataManager.getInstance(this);
+        storageManager = new TaskStorageManager(this);
+        storageManager.checkAndMigrateData(); // Check if migration is needed
+        autoSaveHandler = new android.os.Handler();
 
-        try {
-            notificationHelper = new NotificationHelper(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        notificationHelper = new NotificationHelper(this);
 
-        try {
-            initViews();
-            setupNavigation();
-            setupBackPressHandler();
-            startAutoSave();
-            requestPermissions();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initViews();
+        setupNavigation();
+        setupBackPressHandler();
+        startAutoSave();
+        requestPermissions();
 
         // Initialize defaults in the background
         new Thread(() -> {
-            try {
-                if (dm != null) {
-                    dm.initializeDefaultData();
-                    // Generate today's recurring task instances
-                    dm.generateTodaysRecurringTasks();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (dm != null) {
+                dm.initializeDefaultData();
+                // Generate today's recurring task instances
+                dm.generateTodaysRecurringTasks();
             }
-            try {
-                // Schedule the midnight alarm for daily task generation
-                MidnightTaskScheduler scheduler = new MidnightTaskScheduler(MainActivity.this);
-                scheduler.scheduleMidnightAlarm();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                runOnUiThread(this::refreshNavigationCategories);
-            } catch (Exception ignored) {
-            }
+            // Schedule the midnight alarm for daily task generation
+            MidnightTaskScheduler scheduler = new MidnightTaskScheduler(MainActivity.this);
+            scheduler.scheduleMidnightAlarm();
+            refreshNavigationCategories();
         }).start();
 
         // Load default fragment
-        try {
-            if (savedInstanceState == null) {
-                tasksFragment = TasksFragment.newInstance();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, tasksFragment)
-                        .commit();
-                if (bottomNavigation != null) {
-                    bottomNavigation.setSelectedItemId(R.id.nav_tasks);
-                }
+        if (savedInstanceState == null) {
+            tasksFragment = TasksFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, tasksFragment)
+                    .commit();
+            if (bottomNavigation != null) {
+                bottomNavigation.setSelectedItemId(R.id.nav_tasks);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         // Stop any playing alarm when app launches
-        try {
-            NotificationHelper.stopAlarmSound();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NotificationHelper.stopAlarmSound();
 
         handleIntent(getIntent());
     }
@@ -180,27 +133,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void applySystemBars() {
-        try {
-            // Ensure screenshot-like system bars: white status bar with dark icons.
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
-            WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
-                    getWindow().getDecorView());
-            if (controller != null) {
-                controller.setAppearanceLightStatusBars(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Ensure screenshot-like system bars: white status bar with dark icons.
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
+                getWindow().getDecorView());
+        if (controller != null) {
+            controller.setAppearanceLightStatusBars(true);
         }
     }
 
     private void applySavedTheme() {
-        try {
-            android.content.SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-            int mode = prefs.getInt("night_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-            AppCompatDelegate.setDefaultNightMode(mode);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        android.content.SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        int mode = prefs.getInt("night_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
 
     private static final int STORAGE_PERMISSION_CODE = 101; // Added Storage Permission Code
@@ -296,16 +241,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
 
         // Keep category counts fresh whenever the drawer is opened.
-        try {
-            drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-                @Override
-                public void onDrawerOpened(@NonNull View drawerView) {
-                    refreshNavigationCategories();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                refreshNavigationCategories();
+            }
+        });
 
         // Initial population
         refreshNavigationCategories();
@@ -347,11 +288,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navView.setNavigationItemSelectedListener(this);
         }
 
-        try {
-            refreshNavigationCategories();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        refreshNavigationCategories();
 
         // Setup bottom navigation
         if (bottomNavigation != null) {
@@ -429,44 +366,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void refreshNavigationCategories() {
-        try {
-            if (dm == null || navCategoriesContainer == null)
-                return;
+        // Run in background to avoid blocking UI thread
+        if (dm == null || navCategoriesContainer == null)
+            return;
 
-            navCategoriesContainer.removeAllViews();
+        new Thread(() -> {
+            try {
+                // Fetch data in background
+                List<Category> categories = dm.getAllCategories();
+                int starredCount = dm.getStarredTasks().size();
 
-            // Add starred item first
-            addNavCategoryItem("⭐", "Starred Tasks", "#FFD700", "star", dm.getStarredTasks().size(), true);
+                // Pre-calculate counts map to avoid multiple DB hits inside runOnUiThread
+                java.util.Map<String, Integer> categoryCounts = new java.util.HashMap<>();
+                int allCount = dm.getPendingTaskCount();
 
-            // Add section header
-            View headerView = LayoutInflater.from(this).inflate(R.layout.nav_section_header, navCategoriesContainer,
-                    false);
-            TextView tvHeader = headerView.findViewById(R.id.tv_section_header);
-            if (tvHeader != null)
-                tvHeader.setText("Categories");
-            navCategoriesContainer.addView(headerView);
-
-            // Get all categories
-            List<Category> categories = dm.getAllCategories();
-            if (categories != null) {
-                for (Category category : categories) {
-                    int count = category.getName().equalsIgnoreCase("All")
-                            ? dm.getPendingTaskCount()
-                            : dm.getPendingCountByCategory(category.getName());
-
-                    String iconName = category.getIcon() != null ? category.getIcon() : "folder";
-                    String color = category.getColor() != null ? category.getColor() : "#2196F3";
-
-                    addNavCategoryItem(iconName, category.getName(), color, iconName, count, false);
+                if (categories != null) {
+                    for (Category category : categories) {
+                        int count = category.getName().equalsIgnoreCase("All")
+                                ? allCount
+                                : dm.getPendingCountByCategory(category.getName());
+                        categoryCounts.put(category.getName(), count);
+                    }
                 }
+
+                // Update UI on main thread
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed())
+                        return;
+
+                    navCategoriesContainer.removeAllViews();
+
+                    // Add starred item first
+                    addNavCategoryItem("⭐", "Starred Tasks", "#FFD700", "star", starredCount, true);
+
+                    // Add section header
+                    View headerView = LayoutInflater.from(this).inflate(R.layout.nav_section_header,
+                            navCategoriesContainer,
+                            false);
+                    TextView tvHeader = headerView.findViewById(R.id.tv_section_header);
+                    if (tvHeader != null)
+                        tvHeader.setText("Categories");
+                    navCategoriesContainer.addView(headerView);
+
+                    // Get all categories
+                    if (categories != null) {
+                        for (Category category : categories) {
+                            int count = categoryCounts.getOrDefault(category.getName(), 0);
+
+                            String iconName = category.getIcon() != null ? category.getIcon() : "folder";
+                            String color = category.getColor() != null ? category.getColor() : "#2196F3";
+
+                            addNavCategoryItem(iconName, category.getName(), color, iconName, count, false);
+                        }
+                    }
+
+                    // Add "Create New" item
+                    addCreateNewCategoryItem();
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            // Add "Create New" item
-            addCreateNewCategoryItem();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     private void addNavCategoryItem(String iconType, String name, String color, String iconName, int count,
@@ -694,24 +654,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         applyBackground();
-        try {
-            if (dm != null) {
+        if (dm != null) {
+            // Run heavy recurrence checks in background
+            new Thread(() -> {
                 dm.checkAndHandleMissedRecurrences();
                 // Also ensure today's recurring tasks are generated
                 dm.generateTodaysRecurringTasks();
-                // Refresh fragments if visible
-                if (tasksFragment != null && tasksFragment.isVisible()) {
-                    tasksFragment.loadTasks();
-                }
-                if (calendarFragment != null && calendarFragment.isVisible()) {
-                    // Start a new transaction to refresh or expose a refresh method
-                    // best to just let the fragment handle it in its onResume,
-                    // but we need to signal data changed?
-                    // Fragments usually reload in their own onResume.
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed())
+                        return;
+                    // Refresh fragments if visible
+                    if (tasksFragment != null && tasksFragment.isVisible()) {
+                        tasksFragment.loadTasks();
+                    }
+                });
+            }).start();
         }
     }
 
@@ -780,8 +738,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        // Silent export when app goes to background (no UI toast)
-        new Thread(() -> storageManager.exportAllTasks(false)).start();
+        // Silent export only if data changed
+        if (dm != null && dm.isDataDirty()) {
+            new Thread(() -> storageManager.exportAllTasks(false)).start();
+        }
     }
 
     @Override

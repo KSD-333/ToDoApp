@@ -41,6 +41,8 @@ public class DataManager {
         return instance;
     }
 
+    private boolean isDirty = false;
+
     // ==================== INITIALIZATION ====================
 
     public synchronized void initializeData() {
@@ -110,7 +112,21 @@ public class DataManager {
                     db.subTaskDao().insert(st);
                 }
             } else {
-                generateSampleData();
+                // Only generate sample data on FIRST RUN ever
+                android.content.SharedPreferences prefs = context.getSharedPreferences("app_prefs",
+                        Context.MODE_PRIVATE);
+                boolean isFirstRun = prefs.getBoolean("is_first_run", true);
+                if (isFirstRun) {
+                    generateSampleData();
+                    prefs.edit().putBoolean("is_first_run", false).apply();
+                }
+            }
+        } else {
+            // Data exists, so this is definitely not the first run.
+            // Mark it as such to prevent future sample generation if user clears all tasks.
+            android.content.SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+            if (prefs.getBoolean("is_first_run", true)) {
+                prefs.edit().putBoolean("is_first_run", false).apply();
             }
         }
 
@@ -293,7 +309,7 @@ public class DataManager {
     }
 
     public synchronized int getPendingTaskCount() {
-        return getTasksByStatus(0).size();
+        return db.taskDao().getPendingTaskCount();
     }
 
     public synchronized int getTaskCountByCategory(String category) {
@@ -301,13 +317,17 @@ public class DataManager {
     }
 
     public synchronized int getPendingCountByCategory(String category) {
-        return getTasksByStatusAndCategory(0, category).size();
+        if ("No Category".equalsIgnoreCase(category)) {
+            return db.taskDao().getPendingTaskCountNoCategory();
+        }
+        return db.taskDao().getPendingTaskCountByCategory(category);
     }
 
     public synchronized long insertTask(TaskList task) {
         long id = db.taskDao().insert(task); // Returns rowId (which is id)
         task.id = (int) id;
         tasks.add(task); // Update cache
+        isDirty = true;
         sendWidgetUpdate();
         return id;
     }
@@ -325,6 +345,7 @@ public class DataManager {
                 break;
             }
         }
+        isDirty = true;
         sendWidgetUpdate();
     }
 
@@ -465,12 +486,14 @@ public class DataManager {
     public synchronized void deleteTask(TaskList task) {
         db.taskDao().delete(task);
         tasks.removeIf(t -> t.id == task.id);
+        isDirty = true;
         sendWidgetUpdate();
     }
 
     public synchronized void deleteTaskById(int id) {
         db.taskDao().deleteById(id);
         tasks.removeIf(t -> t.id == id);
+        isDirty = true;
     }
 
     // ==================== CATEGORY OPERATIONS ====================
@@ -485,6 +508,7 @@ public class DataManager {
         long id = db.categoryDao().insert(category);
         category.id = (int) id;
         categories.add(category);
+        isDirty = true;
     }
 
     public synchronized void updateCategory(Category category) {
@@ -495,16 +519,19 @@ public class DataManager {
                 break;
             }
         }
+        isDirty = true;
     }
 
     public synchronized void deleteCategory(Category category) {
         db.categoryDao().delete(category);
         categories.removeIf(c -> c.id == category.id);
+        isDirty = true;
     }
 
     public synchronized void deleteCategory(int categoryId) {
         db.categoryDao().deleteById(categoryId);
         categories.removeIf(c -> c.id == categoryId);
+        isDirty = true;
     }
 
     // ==================== SUBTASK OPERATIONS ====================
@@ -517,18 +544,22 @@ public class DataManager {
         long id = db.subTaskDao().insert(subTask);
         subTask.id = (int) id;
         subTasks.add(subTask); // Optional cache update
+        isDirty = true;
     }
 
     public synchronized void updateSubTask(SubTask subTask) {
         db.subTaskDao().update(subTask);
+        isDirty = true;
     }
 
     public synchronized void deleteSubTask(SubTask subTask) {
         db.subTaskDao().delete(subTask);
+        isDirty = true;
     }
 
     public synchronized void deleteSubTask(int subTaskId) {
         db.subTaskDao().deleteById(subTaskId);
+        isDirty = true;
     }
 
     // ==================== TEMPLATES ====================
@@ -609,10 +640,11 @@ public class DataManager {
     }
     // RESTORED METHODS END
 
-    public synchronized void checkAndHandleMissedRecurrences() {
+    public void checkAndHandleMissedRecurrences() {
         // Helper to check overdue recurring tasks and mark them missed, creating
         // subsequent tasks
-        List<TaskList> all = getAllTasks();
+        // NOT synchronized to avoid blocking UI thread for long duration
+        List<TaskList> all = getAllTasks(); // Internal call, synchronized
 
         long todayStart = 0;
         java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -632,44 +664,54 @@ public class DataManager {
             if (task.check == 0 && isRecurring) {
                 if (task.dueDate > 0 && task.dueDate < todayStart) {
 
-                    // Mark the FIRST overdue instance as missed
-                    task.check = 2; // Missed
-                    updateTask(task);
-                    changed = true;
-
-                    // Now fill the gap between that task's due date and today
-                    long currentProcessingDate = task.dueDate;
-
-                    // Safety break to prevent infinite loops (e.g. max 500 instances)
-                    int iterations = 0;
-
-                    while (iterations < 2000) {
-                        long nextDate = calculateSingleNextDueDate(task, currentProcessingDate);
-
-                        if (nextDate <= 0)
-                            break; // Error or invalid
-                        if (nextDate >= todayStart) {
-                            // This instance falls on (or after) today. Create it as PENDING.
-                            TaskList nextTask = createNextTaskInstance(task, nextDate, 0);
-                            newTasks.add(nextTask);
-                            break; // Done filling gaps
-                        } else {
-                            // This instance is ALSO in the past. Create it as MISSED.
-                            TaskList missedTask = createNextTaskInstance(task, nextDate, 2);
-                            // We insert directly or add to a list to insert?
-                            // Better to add to list to batch, but we need IDs?
-                            // Actually, insertTask is synchronized. Safe.
-                            // However, we are iterating 'all' which is a copy, so safe to modify DB.
-                            // But we are in a loop for ONE original task.
-                            // Let's add to 'newTasks' list, but wait..
-                            // If we add to 'newTasks', the loop below will insert them.
-                            // But for "missed" ones, we might want to insert them now or just add to list.
-                            // The problem is createNextTaskInstance returns an object.
-                            newTasks.add(missedTask);
+                    // Atomic check and update to prevent race conditions (e.g. user completes task
+                    // while we process)
+                    boolean proceed = false;
+                    synchronized (this) {
+                        TaskList current = getTaskById(task.id);
+                        if (current != null && current.check == 0) {
+                            current.check = 2; // Missed
+                            updateTask(current);
+                            proceed = true;
+                            changed = true;
                         }
+                    }
 
-                        currentProcessingDate = nextDate;
-                        iterations++;
+                    if (proceed) {
+                        // Now fill the gap between that task's due date and today
+                        long currentProcessingDate = task.dueDate;
+
+                        // Safety break to prevent infinite loops (e.g. max 2000 instances)
+                        int iterations = 0;
+
+                        while (iterations < 2000) {
+                            long nextDate = calculateSingleNextDueDate(task, currentProcessingDate);
+
+                            if (nextDate <= 0)
+                                break; // Error or invalid
+                            if (nextDate >= todayStart) {
+                                // This instance falls on (or after) today. Create it as PENDING.
+                                TaskList nextTask = createNextTaskInstance(task, nextDate, 0);
+                                newTasks.add(nextTask);
+                                break; // Done filling gaps
+                            } else {
+                                // This instance is ALSO in the past. Create it as MISSED.
+                                TaskList missedTask = createNextTaskInstance(task, nextDate, 2);
+                                // We insert directly or add to a list to insert?
+                                // Better to add to list to batch, but we need IDs?
+                                // Actually, insertTask is synchronized. Safe.
+                                // However, we are iterating 'all' which is a copy, so safe to modify DB.
+                                // But we are in a loop for ONE original task.
+                                // Let's add to 'newTasks' list, but wait..
+                                // If we add to 'newTasks', the loop below will insert them.
+                                // But for "missed" ones, we might want to insert them now or just add to list.
+                                // The problem is createNextTaskInstance returns an object.
+                                newTasks.add(missedTask);
+                            }
+
+                            currentProcessingDate = nextDate;
+                            iterations++;
+                        }
                     }
                 }
             }
@@ -677,7 +719,7 @@ public class DataManager {
 
         if (!newTasks.isEmpty()) {
             for (TaskList t : newTasks) {
-                long newId = insertTask(t);
+                long newId = insertTask(t); // Synchronized
 
                 // Schedule reminders ONLY for Pending tasks (Status 0) that are in future/today
                 if (t.check == 0
@@ -710,8 +752,9 @@ public class DataManager {
      * 3. If no instance exists for today (by checking recurringParentId and date),
      * create one
      */
-    public synchronized void generateTodaysRecurringTasks() {
-        List<TaskList> all = getAllTasks();
+    public void generateTodaysRecurringTasks() {
+        // NOT synchronized to avoid blocking UI
+        List<TaskList> all = getAllTasks(); // Synchronized
 
         // Calculate today's date range
         java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -772,7 +815,7 @@ public class DataManager {
 
         // Insert all new task instances
         for (TaskList t : tasksToCreate) {
-            long newId = insertTask(t);
+            long newId = insertTask(t); // Synchronized
 
             // Schedule reminders for tasks with time in the future
             if ((t.getUseAlarm() == 1 || (t.getReminderMinutes() != null && !t.getReminderMinutes().isEmpty()))
@@ -789,7 +832,18 @@ public class DataManager {
             }
         }
 
-        android.util.Log.d("DataManager", "Generated " + tasksToCreate.size() + " recurring task instances for today");
+        if (!tasksToCreate.isEmpty()) {
+            android.util.Log.d("DataManager",
+                    "Generated " + tasksToCreate.size() + " recurring task instances for today");
+        }
+    }
+
+    public synchronized boolean isDataDirty() {
+        return isDirty;
+    }
+
+    public synchronized void clearDataDirty() {
+        isDirty = false;
     }
 
     /**

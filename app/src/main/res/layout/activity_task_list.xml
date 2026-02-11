@@ -125,7 +125,10 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:visibility="gone">
+                            android:visibility="gone"
+                            android:background="@drawable/chip_unselected_bg"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp">
                             
                             <ImageView
                                 android:layout_width="14dp"
@@ -149,8 +152,11 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
-                            android:layout_marginStart="12dp"
-                            android:visibility="gone">
+                            android:layout_marginStart="8dp"
+                            android:visibility="gone"
+                            android:background="@drawable/chip_unselected_bg"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp">
                             
                             <ImageView
                                 android:layout_width="14dp"
