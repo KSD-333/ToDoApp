@@ -149,8 +149,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
                 getWindow().getDecorView());
         if (controller != null) {
-            controller.setAppearanceLightStatusBars(true);
-            controller.setAppearanceLightNavigationBars(true);
+            boolean isNightMode = (getResources().getConfiguration().uiMode &
+                    android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+            controller.setAppearanceLightStatusBars(!isNightMode);
+            controller.setAppearanceLightNavigationBars(!isNightMode);
         }
 
         // Apply insets manually to the main content container
