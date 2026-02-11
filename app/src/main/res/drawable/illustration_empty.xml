@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Background Circle (Soft Blue) -->
+    <path
+        android:fillColor="#E3F2FD"
+        android:pathData="M100,20 A80,80 0 1,1 100,180 A80,80 0 1,1 100,20 Z" />
+
+    <!-- Coffee Cup (White) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,80 L60,130 Q60,150 80,150 L120,150 Q140,150 140,130 L140,80 Z" />
+    
+    <!-- Cup Handle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M140,90 Q160,90 160,110 Q160,130 140,130 L140,120 Q150,120 150,110 Q150,100 140,100 Z" />
+
+    <!-- Coffee Liquid (Brown) -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M65,85 L135,85 L135,80 L65,80 Z" />
+
+    <!-- Steam 1 -->
+    <path
+        android:fillColor="#B3E5FC"
+        android:pathData="M80,70 Q90,60 80,50"
+        android:strokeColor="#90CAF9"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"/>
+
+    <!-- Steam 2 -->
+    <path
+        android:fillColor="#B3E5FC"
+        android:pathData="M100,65 Q110,55 100,45"
+        android:strokeColor="#90CAF9"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"/>
+
+    <!-- Steam 3 -->
+    <path
+        android:fillColor="#B3E5FC"
+        android:pathData="M120,70 Q130,60 120,50"
+        android:strokeColor="#90CAF9"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"/>
+        
+    <!-- Checkmark Badge (Green) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M130,130 A20,20 0 1,1 130,170 A20,20 0 1,1 130,130 Z" />
+        
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M122,150 L128,156 L138,144"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+</vector>

@@ -57,4 +57,12 @@
     <!-- Speech Bubble -->
     <color name="speech_bubble_bg">#F5D789</color>
     <color name="speech_bubble_text">#5A4A2A</color>
+
+    <!-- Task Progress Colors -->
+    <color name="progress_green">#4CAF50</color>
+    <color name="progress_blue">#2196F3</color>
+    <color name="progress_orange">#FF9800</color>
+    <color name="progress_purple">#9C27B0</color>
+    <color name="progress_red">#F44336</color>
+    <color name="progress_teal">#009688</color>
 </resources>

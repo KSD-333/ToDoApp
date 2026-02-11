@@ -504,6 +504,19 @@ public class DataManager {
         return new ArrayList<>(categories);
     }
 
+    // Helper to get color without refreshing from DB (efficient for adapters)
+    public synchronized String getCategoryColor(String categoryName) {
+        if (categoryName == null || categoryName.trim().isEmpty())
+            return "#9E9E9E"; // Grey
+
+        for (Category c : categories) {
+            if (c.getName().equalsIgnoreCase(categoryName)) {
+                return c.getColor() != null ? c.getColor() : "#2196F3";
+            }
+        }
+        return "#2196F3"; // Default blue if not found
+    }
+
     public synchronized void insertCategory(Category category) {
         long id = db.categoryDao().insert(category);
         category.id = (int) id;

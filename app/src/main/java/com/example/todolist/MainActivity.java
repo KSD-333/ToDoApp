@@ -138,12 +138,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void applySystemBars() {
-        // Ensure screenshot-like system bars: white status bar with dark icons.
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+        // Transparent status bar for edge-to-edge effect
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+        // Navigation bar transparent too
+        getWindow().setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+
+        // Let content draw behind system bars
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
                 getWindow().getDecorView());
         if (controller != null) {
             controller.setAppearanceLightStatusBars(true);
+            controller.setAppearanceLightNavigationBars(true);
+        }
+
+        // Apply insets manually to the main content container
+        View coordinator = findViewById(R.id.main_coordinator);
+        if (coordinator != null) {
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(coordinator, (v, windowInsets) -> {
+                androidx.core.graphics.Insets insets = windowInsets
+                        .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                // Apply padding to avoid system bars covering content
+                v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+                return androidx.core.view.WindowInsetsCompat.CONSUMED;
+            });
         }
     }
 

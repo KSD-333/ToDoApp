@@ -7,7 +7,7 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="#E6FFFFFF"
+    app:cardBackgroundColor="#FFFFFFFF"
     android:foreground="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
@@ -16,6 +16,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
+        <!-- Category Color Strip -->
+        <View
+            android:id="@+id/category_strip"
+            android:layout_width="6dp"
+            android:layout_height="match_parent"
+            android:background="#2196F3"
+            android:layout_gravity="start"/>
+
         <!-- Progress fill background (fills from left as subtasks complete) -->
         <View
             android:id="@+id/progress_fill_bg"

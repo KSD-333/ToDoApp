@@ -112,18 +112,18 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
     public int getProgressColorValue() {
         switch (getProgressColor()) {
             case COLOR_BLUE:
-                return Color.parseColor("#2196F3");
+                return ContextCompat.getColor(context, R.color.progress_blue);
             case COLOR_ORANGE:
-                return Color.parseColor("#FF9800");
+                return ContextCompat.getColor(context, R.color.progress_orange);
             case COLOR_PURPLE:
-                return Color.parseColor("#9C27B0");
+                return ContextCompat.getColor(context, R.color.progress_purple);
             case COLOR_RED:
-                return Color.parseColor("#F44336");
+                return ContextCompat.getColor(context, R.color.progress_red);
             case COLOR_TEAL:
-                return Color.parseColor("#009688");
+                return ContextCompat.getColor(context, R.color.progress_teal);
             case COLOR_GREEN:
             default:
-                return Color.parseColor("#4CAF50");
+                return ContextCompat.getColor(context, R.color.progress_green);
         }
     }
 
@@ -175,6 +175,9 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                 holder.itemView.setTranslationX(0f);
             }
 
+            // Reset alpha and translation for recycled views
+            holder.itemView.setAlpha(1.0f);
+
             // Overdue background logic
             if (holder.itemView instanceof androidx.cardview.widget.CardView) {
                 androidx.cardview.widget.CardView card = (androidx.cardview.widget.CardView) holder.itemView;
@@ -193,10 +196,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                         isOverdue = true; // Past date (Yesterday or earlier)
                     } else if (task.dueDate == todayStart && task.taskTime != null && !task.taskTime.isEmpty()) {
                         // It is TODAY. Check time explicitly.
-                        // Currently logic might have been marking all today tasks as overdue if now >
-                        // midnight
                         try {
-                            // Try parsing "h:mm a" (e.g. 7:45 PM)
                             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
                             Date timeDate = sdf.parse(task.taskTime);
                             if (timeDate != null) {
@@ -213,21 +213,31 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                                 }
                             }
                         } catch (Exception e) {
-                            // Fallback: If parse fails, don't mark as overdue just yet to be safe
                         }
                     }
                 }
 
                 if (isOverdue || task.check == 2) {
-                    card.setCardBackgroundColor(Color.parseColor("#FFCDD2")); // Use consistent Light Red
+                    card.setCardBackgroundColor(Color.parseColor("#FFF5F5")); // Softer Error Red
                 } else {
-                    card.setCardBackgroundColor(Color.parseColor("#E6FFFFFF"));
+                    card.setCardBackgroundColor(Color.parseColor("#FFFFFF")); // Opaque White
                 }
             }
         } catch (Exception ignored) {
         }
 
         holder.taskname.setText(task.task);
+
+        // Set category strip color
+        if (holder.categoryStrip != null) {
+            String colorHex = dm.getCategoryColor(task.category);
+            try {
+                int color = Color.parseColor(colorHex);
+                holder.categoryStrip.setBackgroundColor(color);
+            } catch (Exception e) {
+                holder.categoryStrip.setBackgroundColor(ContextCompat.getColor(context, R.color.primary_blue));
+            }
+        }
 
         // Set category if available
         if (holder.taskcategory != null && task.category != null && !task.category.isEmpty()) {
@@ -275,7 +285,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         // Show task details (date, time, repeat, star)
         boolean hasDetails = false;
 
-        // Star corner badge indicator (new triangle style)
+        // Star corner badge indicator
         if (holder.ivStarBadge != null && holder.ivStarIconBadge != null) {
             if (task.isStarred == 1) {
                 holder.ivStarBadge.setVisibility(View.VISIBLE);
@@ -359,31 +369,26 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
             final int finalCompleted = completed;
             final int totalSubtasks = subtasks.size();
 
-            // Always show the progress badge at top right corner (like star badge)
+            // Always show the progress badge at top right corner
             if (holder.ivProgressBadge != null) {
-                // Set badge color using tint
                 holder.ivProgressBadge.setColorFilter(progressColor, android.graphics.PorterDuff.Mode.SRC_IN);
                 holder.ivProgressBadge.setVisibility(View.VISIBLE);
 
-                // Set percentage text
                 if (holder.tvProgressPercent != null) {
                     holder.tvProgressPercent.setText(percentInt + "%");
                     holder.tvProgressPercent.setVisibility(View.VISIBLE);
                 }
 
-                // Set count text
                 if (holder.tvSubtaskCount != null) {
                     holder.tvSubtaskCount.setText(finalCompleted + "/" + totalSubtasks);
                     holder.tvSubtaskCount.setVisibility(View.VISIBLE);
                 }
             }
 
-            // Apply selected progress style (fill or bar)
+            // Apply selected progress style
             switch (progressStyle) {
                 case STYLE_FILL:
-                    // Fill background from left
                     if (holder.progressFillBg != null) {
-                        // Set fill background color
                         GradientDrawable fillBg = new GradientDrawable();
                         fillBg.setShape(GradientDrawable.RECTANGLE);
                         fillBg.setColors(new int[] {
@@ -405,10 +410,8 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                     break;
 
                 case STYLE_BAR:
-                    // Bottom progress bar
                     if (holder.bottomProgressContainer != null && holder.bottomProgressFill != null) {
                         holder.bottomProgressContainer.setVisibility(View.VISIBLE);
-                        // Set bar color
                         GradientDrawable barBg = new GradientDrawable();
                         barBg.setShape(GradientDrawable.RECTANGLE);
                         barBg.setCornerRadii(new float[] { 0, 0, 0, 0, 12, 12, 12, 12 });
@@ -424,17 +427,12 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                         });
                     }
                     break;
-
-                case STYLE_BADGE:
-                    // Badge only - already shown above
-                    break;
             }
 
             // Show subtask names if enabled
             if (showNames && holder.subtaskSection != null && holder.subtasksList != null) {
                 holder.subtasksList.removeAllViews();
 
-                // Show ALL subtasks so user can complete them from main list
                 for (int i = 0; i < subtasks.size(); i++) {
                     SubTask st = subtasks.get(i);
                     View subtaskView = LayoutInflater.from(context).inflate(R.layout.item_subtask_mini,
@@ -445,7 +443,6 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                     TextView title = subtaskView.findViewById(R.id.tv_subtask_title);
                     View progressIndicator = subtaskView.findViewById(R.id.subtask_progress_indicator);
 
-                    // Hide individual progress indicator (we're showing overall progress)
                     if (progressIndicator != null) {
                         progressIndicator.setVisibility(View.GONE);
                     }
@@ -453,7 +450,6 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                     title.setText(st.title);
 
                     if (st.isCompleted == 1) {
-                        // Set completed circle with selected color
                         GradientDrawable checkedCircle = new GradientDrawable();
                         checkedCircle.setShape(GradientDrawable.OVAL);
                         checkedCircle.setColor(progressColor);
@@ -470,7 +466,6 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                         title.setTextColor(ContextCompat.getColor(context, R.color.text_secondary));
                     }
 
-                    // Click to toggle subtask
                     final SubTask finalSt = st;
                     subtaskView.setOnClickListener(v -> {
                         finalSt.isCompleted = finalSt.isCompleted == 1 ? 0 : 1;
@@ -485,7 +480,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
             }
 
         } else {
-            // No subtasks - hide all indicators
+            // No subtasks
             if (holder.progressFillBg != null)
                 holder.progressFillBg.setVisibility(View.GONE);
             if (holder.bottomProgressContainer != null)
@@ -500,7 +495,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
                 holder.tvSubtaskCount.setVisibility(View.GONE);
         }
 
-        // Render marker (always visible on right)
+        // Render marker
         if (holder.markerContainer != null) {
             renderMarker(holder, task);
 
@@ -519,8 +514,31 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
             task.completedAt = completedAt;
             dm.updateStatusAndCompletedAt(task.id, status, completedAt);
 
-            if (listener != null) {
-                listener.onCheck(task, position);
+            // Animate disappearance if completed
+            if (status == 1) {
+                // Strike through styling immediately
+                holder.taskname
+                        .setPaintFlags(holder.taskname.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+                holder.taskname.setTextColor(Color.GRAY);
+
+                // Fade out and slide right
+                holder.itemView.animate()
+                        .alpha(0f)
+                        .translationX(100f)
+                        .setDuration(400)
+                        .withEndAction(() -> {
+                            // Reset view properties in case it's recycled (though onBind fixes this too)
+                            holder.itemView.setAlpha(1.0f);
+                            holder.itemView.setTranslationX(0f);
+                            if (listener != null) {
+                                listener.onCheck(task, position);
+                            }
+                        })
+                        .start();
+            } else {
+                if (listener != null) {
+                    listener.onCheck(task, position);
+                }
             }
         });
 
@@ -586,6 +604,7 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
         LinearLayout subtasksList;
         View progressFillBg;
         View bottomProgressFill;
+        View categoryStrip;
         FrameLayout bottomProgressContainer;
         // New progress badge views (corner style like star badge)
         ImageView ivProgressBadge;
@@ -652,6 +671,9 @@ public class TaskListAdaptar extends RecyclerView.Adapter<TaskListAdaptar.viewHo
             ivProgressBadge = itemView.findViewById(R.id.iv_progress_badge);
             tvProgressPercent = itemView.findViewById(R.id.tv_progress_percent);
             tvSubtaskCount = itemView.findViewById(R.id.tv_subtask_count);
+
+            // Category strip
+            categoryStrip = itemView.findViewById(R.id.category_strip);
         }
     }
 

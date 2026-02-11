@@ -1917,8 +1917,53 @@ public class TasksFragment extends Fragment {
 
     private void updateEmptyState() {
         if (taskList.isEmpty()) {
-            if (emptyState != null)
+            if (emptyState != null) {
                 emptyState.setVisibility(View.VISIBLE);
+
+                // Update empty state text based on context
+                TextView emptyText = emptyState.findViewById(R.id.tv_empty_message); // Ensure ID exists or find by
+                                                                                     // traversal
+                // Since layout might not have ID, let's try finding the TextView inside
+                // empty_state
+                if (emptyText == null && emptyState.getChildCount() > 0) {
+                    View child = emptyState.getChildAt(1); // Usually bubble container
+                    if (child instanceof LinearLayout) {
+                        View tv = ((LinearLayout) child).getChildAt(0);
+                        if (tv instanceof TextView) {
+                            emptyText = (TextView) tv;
+                        }
+                    }
+                }
+
+                if (emptyText != null) {
+                    if (isSearchActive) {
+                        emptyText.setText("No tasks found matching \"" + etSearch.getText().toString() + "\"");
+                    } else if ("All".equals(currentCategory) && currentFilter == null) {
+                        emptyText.setText("Click + to create your first task.");
+                    } else if (currentFilter != null) {
+                        switch (currentFilter) {
+                            case "today":
+                                emptyText.setText("No tasks for Today!");
+                                break;
+                            case "previous":
+                                emptyText.setText("No overdue tasks!");
+                                break;
+                            case "future":
+                                emptyText.setText("No upcoming tasks!");
+                                break;
+                            case "completed":
+                                emptyText.setText("No completed tasks yet!");
+                                break;
+                            default:
+                                emptyText.setText("No tasks found.");
+                                break;
+                        }
+                    } else {
+                        // Category specific
+                        emptyText.setText("No tasks in " + currentCategory + ". All caught up!");
+                    }
+                }
+            }
             if (recyclerTasks != null)
                 recyclerTasks.setVisibility(View.GONE);
         } else {

@@ -311,6 +311,28 @@ public class NotificationHelper {
                 .setCategory(useAlarm ? NotificationCompat.CATEGORY_ALARM : NotificationCompat.CATEGORY_REMINDER)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
+        // Theme the notification with category color
+        try {
+            int taskId = notificationId / 100;
+            DataManager dm = DataManager.getInstance(context);
+            TaskList task = dm.getTaskById(taskId);
+            if (task != null) {
+                String catColor = dm.getCategoryColor(task.getCategory());
+                if (catColor != null) {
+                    builder.setColor(android.graphics.Color.parseColor(catColor));
+                    // Colorized allows the background to be tinted on some versions/contexts
+                    // (mostly media or ongoing call, but harmless to try)
+                    // For standard notifications, setColor tints the icon and app name.
+                    builder.setColorized(true);
+                }
+            } else {
+                builder.setColor(android.graphics.Color.parseColor("#2196F3")); // Default blue
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            builder.setColor(android.graphics.Color.parseColor("#2196F3"));
+        }
+
         // Enable screen lock features: show over lock screen, turn screen on
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
             builder.setFullScreenIntent(pendingIntent, useAlarm || useScreenLock);

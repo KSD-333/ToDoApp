@@ -142,9 +142,8 @@
             <ImageView
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:src="@drawable/ic_tasks"
-                app:tint="@color/primary_light_blue"
-                android:alpha="0.5"/>
+                android:src="@drawable/illustration_empty"
+                android:layout_marginBottom="16dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -154,6 +153,7 @@
                 android:layout_marginTop="16dp">
 
                 <TextView
+                    android:id="@+id/tv_empty_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Click + to create your first task."
